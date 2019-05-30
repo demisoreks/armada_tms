@@ -10,6 +10,102 @@ use GuzzleHttp\Client;
 
         <title>{{ $page_title }} | {{ config('app.name') }}</title>
         
+        <style type="text/css">
+        #map {
+          height: 100%;
+        }
+        /* Optional: Makes the sample page fill the window. */
+        html, body {
+          height: 100%;
+          margin: 0;
+          padding: 0;
+        }
+        #description {
+          font-family: Roboto;
+          font-size: 15px;
+          font-weight: 300;
+        }
+
+        #infowindow-content .title {
+          font-weight: bold;
+        }
+
+        #infowindow-content {
+          display: none;
+        }
+
+        #map #infowindow-content {
+          display: inline;
+        }
+
+        .pac-card {
+          margin: 10px 10px 0 0;
+          border-radius: 2px 0 0 2px;
+          box-sizing: border-box;
+          -moz-box-sizing: border-box;
+          outline: none;
+          box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+          background-color: #fff;
+          font-family: Roboto;
+        }
+
+        #pac-container {
+          padding-bottom: 12px;
+          margin-right: 12px;
+        }
+
+        .pac-controls {
+          display: inline-block;
+          padding: 5px 11px;
+        }
+
+        .pac-controls label {
+          font-family: Roboto;
+          font-size: 13px;
+          font-weight: 300;
+        }
+
+        #pac-input {
+          background-color: #fff;
+          font-family: Roboto;
+          font-size: 15px;
+          font-weight: 300;
+          margin-left: 12px;
+          padding: 0 11px 0 13px;
+          text-overflow: ellipsis;
+          width: 400px;
+        }
+
+        #pac-input:focus {
+          border-color: #4d90fe;
+        }
+
+        #title {
+          color: #fff;
+          background-color: #4d90fe;
+          font-size: 25px;
+          font-weight: 500;
+          padding: 6px 12px;
+        }
+        #target {
+          width: 345px;
+        }
+        
+        .pac-container {
+            background-color: #FFF;
+            z-index: 100000;
+            position: absolute;
+            display: inline-block;
+            float: left;
+        }
+        .modal{
+            z-index: 2000;
+        }
+        .modal-backdrop{
+            z-index: 1000;
+        }​
+        </style>
+        
         {!! Html::style('css/app.css') !!}
         {!! Html::style('css/mdb.min.css') !!}
         {!! Html::style('css/datatables.min.css') !!}
@@ -45,6 +141,30 @@ use GuzzleHttp\Client;
             
             function confirmDelete() {
                 if (confirm("Are you sure you want to completely delete this item?")) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+            
+            function confirmSubmit() {
+                if (confirm("Are you sure you want to submit this request?")) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+            
+            function confirmCancel() {
+                if (confirm("Are you sure you want to cancel this request?")) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+            
+            function confirmTreat() {
+                if (confirm("Request will be immediately mapped to your region.\nAre you sure you want to treat this request?")) {
                     return true;
                 } else {
                     return false;
@@ -108,7 +228,7 @@ use GuzzleHttp\Client;
                             <div class="card-header bg-white" id="heading-menu1" style="padding: 0;">
                                 <h5 class="mb-0">
                                     <button class="btn btn-link" data-toggle="collapse" data-target="#collapse-menu1" aria-expanded="true" aria-controls="collapse-menu1">
-                                        <strong>Task Mgt</strong>
+                                        <strong>Task Mgt.</strong>
                                     </button>
                                 </h5>
                             </div>
@@ -122,10 +242,52 @@ use GuzzleHttp\Client;
                                         @if (count(array_intersect($permissions, ['Supervisor'])) != 0)
                                         <a class="nav-link" href="#">Anayltics</a>
                                         @endif
+                                        @if (count(array_intersect($permissions, ['Admin'])) != 0)
+                                        <a class="nav-link" href="{{ route('requests.submitted') }}">Detailing</a>
+                                        @endif
                                     </nav>
                                 </div>
                             </div> 
                         </div>
+                        @if (count(array_intersect($permissions, ['Admin'])) != 0)
+                        <div class="card">
+                            <div class="card-header bg-white" id="heading-menu4" style="padding: 0;">
+                                <h5 class="mb-0">
+                                    <button class="btn btn-link" data-toggle="collapse" data-target="#collapse-menu4" aria-expanded="true" aria-controls="collapse-menu4">
+                                        <strong>Client Mgt.</strong>
+                                    </button>
+                                </h5>
+                            </div>
+                            <div id="collapse-menu4" class="collapse @if (isset($open_menu) && $open_menu == 'client') show @endif" aria-labelledby="heading-menu4" data-parent="#accordion-menu">
+                                <div class="card-body">
+                                    <nav class="nav flex-column">
+                                        <a class="nav-link" href="{{ route('clients.index') }}">Clients</a>
+                                        <a class="nav-link" href="{{ route('requests.index') }}">Service Requests</a>
+                                        <a class="nav-link" href="#">Invoicing</a>
+                                    </nav>
+                                </div>
+                            </div> 
+                        </div>
+                        @endif
+                        @if (count(array_intersect($permissions, ['Detailer'])) != 0)
+                        <div class="card">
+                            <div class="card-header bg-white" id="heading-menu3" style="padding: 0;">
+                                <h5 class="mb-0">
+                                    <button class="btn btn-link" data-toggle="collapse" data-target="#collapse-menu3" aria-expanded="true" aria-controls="collapse-menu3">
+                                        <strong>Resource Mgt.</strong>
+                                    </button>
+                                </h5>
+                            </div>
+                            <div id="collapse-menu3" class="collapse @if (isset($open_menu) && $open_menu == 'resource') show @endif" aria-labelledby="heading-menu3" data-parent="#accordion-menu">
+                                <div class="card-body">
+                                    <nav class="nav flex-column">
+                                        <a class="nav-link" href="{{ route('regions.vehicles.index', App\AmdRegion::whereId(App\AmdUser::where('employee_id', $halo_user->id)->first()->region_id)->first()->slug()) }}">Vehicles</a>
+                                        <a class="nav-link" href="#">Availability</a>
+                                    </nav>
+                                </div>
+                            </div> 
+                        </div>
+                        @endif
                         @if (count(array_intersect($permissions, ['Admin'])) != 0)
                         <div class="card">
                             <div class="card-header bg-white" id="heading-menu2" style="padding: 0;">
@@ -138,9 +300,12 @@ use GuzzleHttp\Client;
                             <div id="collapse-menu2" class="collapse @if (isset($open_menu) && $open_menu == 'admin') show @endif" aria-labelledby="heading-menu2" data-parent="#accordion-menu">
                                 <div class="card-body">
                                     <nav class="nav flex-column">
-                                        <a class="nav-link" href="#">Configuration</a>
-                                        <a class="nav-link" href="{{ route('regions.index') }}">Regions</a>
+                                        <a class="nav-link" href="{{ route('services.index') }}">Services</a>
+                                        <a class="nav-link" href="{{ route('vehicle_types.index') }}">Vehicle Types</a>
+                                        <a class="nav-link" href="{{ route('vendors.index') }}">Vendors</a>
                                         <a class="nav-link" href="{{ route('users.index') }}">Users</a>
+                                        <a class="nav-link" href="{{ route('regions.index') }}">Regions</a>
+                                        <a class="nav-link" href="{{ route('config') }}">Configuration</a>
                                     </nav>
                                 </div>
                             </div> 

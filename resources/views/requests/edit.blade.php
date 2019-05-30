@@ -8,9 +8,10 @@
 </div>
 <div class="row">
     <div class="col-12">
-        <legend>New Region</legend>
-        {!! Form::model(new App\AmdRegion, ['route' => ['regions.store'], 'class' => 'form-group']) !!}
-            @include('regions/form', ['submit_text' => 'Create Region'])
+        <legend>Edit Region</legend>
+        {!! Form::model($region, ['route' => ['regions.update', $region->slug()], 'class' => 'form-group']) !!}
+        @method('PUT')
+        @include('regions/form', ['submit_text' => 'Update Region'])
         {!! Form::close() !!}
     </div>
 </div>
