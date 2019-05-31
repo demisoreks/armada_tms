@@ -139,7 +139,7 @@
     </div>
 </div>
 
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDLVJrm7Lkff7099UNJ4sGKuuPaf3vGai8&libraries=places&callback=initAutocomplete" async defer></script>
+<script src="{{ "https://maps.googleapis.com/maps/api/js?key=".App\AmdConfig::whereId(1)->first()->google_places_api_key."&libraries=places&callback=initAutocomplete" }}" async defer></script>
 <script>
 function initAutocomplete() {
   var map = new google.maps.Map(document.getElementById('map'), {
