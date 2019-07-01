@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class UpdateVehiclesTable extends Migration
+class UpdateVehiclesTable01 extends Migration
 {
     /**
      * Run the migrations.
@@ -14,7 +14,7 @@ class UpdateVehiclesTable extends Migration
     public function up()
     {
         Schema::table('amd_vehicles', function (Blueprint $table) {
-            $table->date('next_service_date')->change();
+            $table->datetime('next_service_date')->change();
         });
     }
 

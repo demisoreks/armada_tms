@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class UpdateVehiclesTable extends Migration
+class UpdateVehiclesTable03 extends Migration
 {
     /**
      * Run the migrations.

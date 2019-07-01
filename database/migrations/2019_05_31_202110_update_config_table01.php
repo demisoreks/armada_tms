@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class UpdateConfigTable extends Migration
+class UpdateConfigTable01 extends Migration
 {
     /**
      * Run the migrations.

@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class UpdateRequestsTable extends Migration
+class UpdateVehiclesTable02 extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,8 @@ class UpdateRequestsTable extends Migration
      */
     public function up()
     {
-        Schema::table('amd_requests', function (Blueprint $table) {
-            $table->dropColumn('comments');
-            $table->integer('rating')->nullable()->after('user_id');
+        Schema::table('amd_vehicles', function (Blueprint $table) {
+            $table->date('next_service_date')->change();
         });
     }
 
@@ -26,7 +25,7 @@ class UpdateRequestsTable extends Migration
      */
     public function down()
     {
-        Schema::table('amd_requests', function (Blueprint $table) {
+        Schema::table('amd_vehicles', function (Blueprint $table) {
             //
         });
     }
