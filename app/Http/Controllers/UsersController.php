@@ -18,7 +18,11 @@ class UsersController extends Controller
         $detailer_role_id = AccRole::where('privileged_link_id', DB::table('amd_config')->whereId(1)->first()->link_id)->where('title', 'Detailer')->first()->id;
         $commander_role_id = AccRole::where('privileged_link_id', DB::table('amd_config')->whereId(1)->first()->link_id)->where('title', 'Commander')->first()->id;
         $users_per_role = AccEmployeeRole::whereRaw('role_id IN ('.$detailer_role_id.', '.$commander_role_id.')')->pluck('employee_id')->toArray();
-        $users = AccEmployee::where('active', true)->whereRaw('id in ('.implode(',', $users_per_role).')')->get();
+        if (count($users_per_role) == 0) {
+            $users = AccEmployee::where('active', true)->whereRaw('id in (\'\')')->get();
+        } else {
+            $users = AccEmployee::where('active', true)->whereRaw('id in ('.implode(',', $users_per_role).')')->get();
+        }
         return view('users.index', compact('users'));
     }
     
