@@ -34,7 +34,7 @@
                                 <tr>
                                     <td>{{ $user->username }}</td>
                                     <td>@if ($amd_user->count() > 0) {{ $amd_user->first()->name }} @endif</td>
-                                    <td class="text-center">@if (File::exists('storage/pictures/'.$amd_user->first()->id.'.jpg')) {{ Html::image('storage/pictures/'.$amd_user->first()->id.'.jpg', 'User picture', ['height' => '100px', 'class' => 'rounded-circle']) }} @endif</td>
+                                    <td class="text-center">@if ($amd_user->count() > 0) @if (File::exists('storage/pictures/'.$amd_user->first()->id.'.jpg')) {{ Html::image('storage/pictures/'.$amd_user->first()->id.'.jpg', 'User picture', ['height' => '100px', 'class' => 'rounded-circle']) }} @endif @endif</td>
                                     <td>@if ($amd_user->count() > 0) {{ $amd_user->first()->mobile_no }} @endif</td>
                                     <td>@if ($amd_user->count() > 0) {{ $amd_user->first()->email }} @endif</td>
                                     <td>@if ($amd_user->count() > 0) {{ $amd_user->first()->region->name }} @endif</td>
