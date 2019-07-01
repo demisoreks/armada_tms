@@ -6,8 +6,7 @@ use Illuminate\Http\Request;
 
 use Session;
 use Lava;
-use App\PtrProject;
-use App\PtrUpdate;
+
 
 class WelcomeController extends Controller
 {
@@ -22,5 +21,9 @@ class WelcomeController extends Controller
         } else {
             return false;
         }
+    }
+    
+    public function thank_you() {
+         return view('thank_you');
     }
 }

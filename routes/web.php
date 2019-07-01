@@ -16,6 +16,9 @@ $link_id = DB::table('amd_config')->whereId(1)->first()->link_id;
 Route::get('/', [
     'as' => 'welcome', 'uses' => 'WelcomeController@index'
 ])->middleware(['auth.user', 'auth.access:'.$link_id.',Admin,Detailer,Commander,Supervisor']);
+Route::get('thank_you', [
+    'as' => 'thank_you', 'uses' => 'WelcomeController@thank_you'
+]);
 
 Route::get('regions/{region}/disable', [
     'as' => 'regions.disable', 'uses' => 'RegionsController@disable'
@@ -123,6 +126,33 @@ Route::put('config/update', [
     'as' => 'config.update', 'uses' => 'ConfigController@update'
 ])->middleware(['auth.user', 'auth.access:'.$link_id.',Admin']);
 
+Route::post('requests/{request}/submit_feedback', [
+    'as' => 'requests.submit_feedback', 'uses' => 'RequestsController@submit_feedback'
+]);
+Route::get('requests/{request}/feedback', [
+    'as' => 'requests.feedback', 'uses' => 'RequestsController@feedback'
+]);
+Route::post('requests/{request}/add_sitrep', [
+    'as' => 'requests.add_sitrep', 'uses' => 'RequestsController@add_sitrep'
+])->middleware(['auth.user', 'auth.access:'.$link_id.',Commander']);
+Route::get('requests/{request}/start', [
+    'as' => 'requests.start', 'uses' => 'RequestsController@start'
+])->middleware(['auth.user', 'auth.access:'.$link_id.',Commander']);
+Route::post('requests/{request}/complete', [
+    'as' => 'requests.complete', 'uses' => 'RequestsController@complete'
+])->middleware(['auth.user', 'auth.access:'.$link_id.',Commander']);
+Route::get('requests/{request}/jmp', [
+    'as' => 'requests.jmp', 'uses' => 'RequestsController@jmp'
+]);
+Route::get('requests/{request}/manage', [
+    'as' => 'requests.manage', 'uses' => 'RequestsController@manage'
+])->middleware(['auth.user', 'auth.access:'.$link_id.',Commander']);
+Route::get('requests/assigned', [
+    'as' => 'requests.assigned', 'uses' => 'RequestsController@assigned'
+])->middleware(['auth.user', 'auth.access:'.$link_id.',Commander']);
+Route::get('requests/{request}/mark_assigned', [
+    'as' => 'requests.mark_assigned', 'uses' => 'RequestsController@mark_assigned'
+])->middleware(['auth.user', 'auth.access:'.$link_id.',Detailer']);
 Route::get('requests/{resource}/remove_resource', [
     'as' => 'requests.remove_resource', 'uses' => 'RequestsController@remove_resource'
 ])->middleware(['auth.user', 'auth.access:'.$link_id.',Detailer']);
@@ -161,3 +191,17 @@ Route::bind('requests', function($value, $route) {
     return App\AmdRequest::findBySlug($value)->first();
 });
 
+Route::resource('downtimes', 'DowntimesController')->middleware(['auth.user', 'auth.access:'.$link_id.',Detailer']);
+Route::bind('downtimes', function($value, $route) {
+    return App\AmdDowntime::findBySlug($value)->first();
+});
+
+Route::get('client', [
+    'as' => 'client.index', 'uses' => 'ClientController@index'
+]);
+Route::get('client/cart', [
+    'as' => 'client.cart', 'uses' => 'ClientController@cart'
+]);
+Route::post('client/update_request', [
+    'as' => 'client.update_request', 'uses' => 'ClientController@update_request'
+]);

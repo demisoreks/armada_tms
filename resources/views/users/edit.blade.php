@@ -11,11 +11,11 @@
         }
         ?>
         @if ($amd_users->count() > 0)
-        {!! Form::model($amd_user, ['route' => ['users.store'], 'class' => 'form-group']) !!}
+        {!! Form::model($amd_user, ['route' => ['users.store'], 'class' => 'form-group', 'files' => true]) !!}
             @include('users/form', ['submit_text' => 'Update User'])
         {!! Form::close() !!}
         @else
-        {!! Form::model(new App\AmdUser, ['route' => ['users.store'], 'class' => 'form-group']) !!}
+        {!! Form::model(new App\AmdUser, ['route' => ['users.store'], 'class' => 'form-group', 'files' => true]) !!}
             @include('users/form', ['submit_text' => 'Update User'])
         {!! Form::close() !!}
         @endif

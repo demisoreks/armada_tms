@@ -170,6 +170,30 @@ use GuzzleHttp\Client;
                     return false;
                 }
             }
+            
+            function confirmMarkAsAssigned() {
+                if (confirm("Marking this request as assigned will notify the client and assigned commander(s).\nYou may want to review your resource assignments before moving ahead.\nAre you sure you want to continue?")) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+            
+            function confirmStart() {
+                if (confirm("Are you sure you want to start this task?")) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+            
+            function confirmComplete() {
+                if (confirm("Are you sure you want to complete this task?")) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
         </script>
 
         <!-- Styles -->
@@ -237,7 +261,7 @@ use GuzzleHttp\Client;
                                     <nav class="nav flex-column">
                                         <a class="nav-link" href="{{ route('welcome') }}">Task Board</a>
                                         @if (count(array_intersect($permissions, ['Commander'])) != 0)
-                                        <a class="nav-link" href="#">My Tasks</a>
+                                        <a class="nav-link" href="{{ route('requests.assigned') }}">My Tasks</a>
                                         @endif
                                         @if (count(array_intersect($permissions, ['Supervisor'])) != 0)
                                         <a class="nav-link" href="#">Anayltics</a>
@@ -263,7 +287,7 @@ use GuzzleHttp\Client;
                                     <nav class="nav flex-column">
                                         <a class="nav-link" href="{{ route('clients.index') }}">Clients</a>
                                         <a class="nav-link" href="{{ route('requests.index') }}">Service Requests</a>
-                                        <a class="nav-link" href="#">Invoicing</a>
+                                        <!--<a class="nav-link" href="#">Invoicing</a>-->
                                     </nav>
                                 </div>
                             </div> 
@@ -282,7 +306,7 @@ use GuzzleHttp\Client;
                                 <div class="card-body">
                                     <nav class="nav flex-column">
                                         <a class="nav-link" href="{{ route('regions.vehicles.index', App\AmdRegion::whereId(App\AmdUser::where('employee_id', $halo_user->id)->first()->region_id)->first()->slug()) }}">Vehicles</a>
-                                        <a class="nav-link" href="#">Availability</a>
+                                        <a class="nav-link" href="{{ route('downtimes.index') }}">Resource Downtime</a>
                                     </nav>
                                 </div>
                             </div> 

@@ -36,4 +36,8 @@ class AmdRequest extends Model
     public function resources() {
         return $this->hasMany('App\AmdResource');
     }
+    
+    public function situationReports() {
+        return $this->hasMany('App\AmdSituationReport');
+    }
 }

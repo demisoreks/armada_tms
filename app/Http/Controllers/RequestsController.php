@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 
 use Input;
 use Redirect;
+use DateTime;
+use Mail;
 use App\AmdRequest;
 use App\AmdClient;
 use App\AmdRequestStatus;
@@ -14,6 +16,7 @@ use App\AmdRequestOption;
 use App\AmdRequestStop;
 use App\AmdUser;
 use App\AmdResource;
+use App\AmdSituationReport;
 
 class RequestsController extends Controller
 {
@@ -194,5 +197,227 @@ class RequestsController extends Controller
         $resource->delete();
         return Redirect::route('requests.treat', $request->slug())
                 ->with('success', '<span class="font-weight-bold">Done!</span><br />Resource has been removed.');
+    }
+    
+    public function mark_assigned(AmdRequest $request) {
+        if (!isset($_SESSION)) session_start();
+        $halo_user = $_SESSION['halo_user'];
+        
+        $request->update([
+            'status_id' => 4
+        ]);
+        AmdRequestStatus::create([
+            'request_id' => $request->id,
+            'status_id' => 4,
+            'updated_by' => $halo_user->id
+        ]);
+        
+        AmdActivity::create([
+            'employee_id' => $halo_user->id,
+            'detail' => 'A request was assigned for '.$request->client->name.'.',
+            'source_ip' => $_SERVER['REMOTE_ADDR']
+        ]);
+        
+        $service_date_time = DateTime::createFromFormat('Y-m-d H:i:s', $request->service_date_time);
+        $jmp_link = config('app.url')."/requests/".$request->slug()."/jmp";
+        $commanders = AmdResource::where('request_id', $request->id)->where('resource_type', 1)->get();
+        
+        foreach ($commanders as $commander) {
+            $user = AmdUser::whereId($commander->resource_id)->first();
+            
+            $assignment_email_data = [
+                'name' => $user->name,
+                'location' => $request->service_location,
+                'date' => $service_date_time->format('l, F n, Y'),
+                'time' => $service_date_time->format('g:i a')
+            ];
+            
+            $recipient = $user->email;
+            
+            Mail::send('emails.assignment', $assignment_email_data, function ($m) use ($recipient) {
+                $m->from('hens@halogensecurity.com', 'Halogen e-Notification Service');
+                $m->to($recipient)->subject('Task Assignment | '. config('app.name'));
+            });
+        }
+        
+        $assigned_email_data = [
+            'name' => $request->client->name,
+            'jmp_link' => $jmp_link
+        ];
+
+        $client_email = $request->client->email;
+
+        Mail::send('emails.request_assigned', $assigned_email_data, function ($m) use ($client_email) {
+            $m->from('hens@halogensecurity.com', 'Halogen e-Notification Service');
+            $m->to($client_email)->subject('Request Update');
+        });
+        
+        $assigned_email_data_p = [
+            'name' => $request->principal_name,
+            'jmp_link' => $jmp_link
+        ];
+
+        $principal_email = $request->principal_email;
+
+        Mail::send('emails.request_assigned_p', $assigned_email_data_p, function ($m) use ($principal_email) {
+            $m->from('hens@halogensecurity.com', 'Halogen e-Notification Service');
+            $m->to($principal_email)->subject('Request Update');
+        });
+        
+        return Redirect::route('requests.submitted')
+                ->with('success', '<span class="font-weight-bold">Completed!</span><br />Request has been assigned.');
+    }
+    
+    public function assigned() {
+        if (!isset($_SESSION)) session_start();
+        $halo_user = $_SESSION['halo_user'];
+        $user = AmdUser::where('employee_id', $halo_user->id)->first();
+        $request_ids = AmdResource::where('resource_type', 1)->where('resource_id', $user->id)->pluck('request_id')->toArray();
+        $requests = AmdRequest::whereRaw('id in ('.implode(',', $request_ids).')')->whereRaw('status_id in (4,5)')->get();
+        return view('requests.assigned', compact('requests'));
+    }
+    
+    public function jmp(AmdRequest $request) {
+        return view('requests.jmp', compact('request'));
+    }
+    
+    public function manage(AmdRequest $request) {
+        return view('requests.manage', compact('request'));
+    }
+    
+    public function start(AmdRequest $request) {
+        if (!isset($_SESSION)) session_start();
+        $halo_user = $_SESSION['halo_user'];
+        
+        $request->update([
+            'status_id' => 5
+        ]);
+        AmdRequestStatus::create([
+            'request_id' => $request->id,
+            'status_id' => 5,
+            'updated_by' => $halo_user->id
+        ]);
+        
+        AmdActivity::create([
+            'employee_id' => $halo_user->id,
+            'detail' => 'A request was started for '.$request->client->name.'.',
+            'source_ip' => $_SERVER['REMOTE_ADDR']
+        ]);
+        
+        return Redirect::route('requests.manage', $request->slug())
+                ->with('success', '<span class="font-weight-bold">Completed!</span><br />Task has been started.');
+    }
+    
+    public function complete(AmdRequest $request) {
+        if (!isset($_SESSION)) session_start();
+        $halo_user = $_SESSION['halo_user'];
+        
+        $input = Input::all();
+        if ($input['interested'] == "Yes") {
+            $request->update([
+                'rating' => $input['rating'],
+                'feedback' => $input['feedback']
+            ]);
+            
+            $completed_email_data = [
+                'name' => $request->client->name,
+                'principal_name' => $request->principal_name,
+                'rating' => $input['rating'],
+                'feedback' => $input['feedback']
+            ];
+
+            $client_email = $request->client->email;
+
+            Mail::send('emails.request_completed', $completed_email_data, function ($m) use ($client_email) {
+                $m->from('hens@halogensecurity.com', 'Halogen e-Notification Service');
+                $m->to($client_email)->subject('Task Completed');
+            });
+
+            $completed_email_data_p = [
+                'name' => $request->principal_name,
+                'rating' => $input['rating'],
+                'feedback' => $input['feedback']
+            ];
+
+            $principal_email = $request->principal_email;
+
+            Mail::send('emails.request_completed_p', $completed_email_data_p, function ($m) use ($principal_email) {
+                $m->from('hens@halogensecurity.com', 'Halogen e-Notification Service');
+                $m->to($principal_email)->subject('Task Completed');
+            });
+        } else {
+            $feedback_link = config('app.url')."/requests/".$request->slug()."/feedback";
+            
+            $completed_email_data = [
+                'name' => $request->client->name,
+                'feedback_link' => $feedback_link
+            ];
+
+            $client_email = $request->client->email;
+
+            Mail::send('emails.request_completed_feedback', $completed_email_data, function ($m) use ($client_email) {
+                $m->from('hens@halogensecurity.com', 'Halogen e-Notification Service');
+                $m->to($client_email)->subject('Task Completed | Feedback Required');
+            });
+
+            $completed_email_data_p = [
+                'name' => $request->principal_name,
+                'feedback_link' => $feedback_link
+            ];
+
+            $principal_email = $request->principal_email;
+
+            Mail::send('emails.request_completed_p_feedback', $completed_email_data_p, function ($m) use ($principal_email) {
+                $m->from('hens@halogensecurity.com', 'Halogen e-Notification Service');
+                $m->to($principal_email)->subject('Task Completed | Feedback Required');
+            });
+        }
+        
+        $request->update([
+            'status_id' => 6
+        ]);
+        AmdRequestStatus::create([
+            'request_id' => $request->id,
+            'status_id' => 6,
+            'updated_by' => $halo_user->id
+        ]);
+        
+        AmdActivity::create([
+            'employee_id' => $halo_user->id,
+            'detail' => 'A request was completed for '.$request->client->name.'.',
+            'source_ip' => $_SERVER['REMOTE_ADDR']
+        ]);
+        
+        return Redirect::route('requests.assigned')
+                ->with('success', '<span class="font-weight-bold">Completed!</span><br />Task has been marked as completed.');
+    }
+    
+    public function add_sitrep(AmdRequest $request) {
+        $input = Input::all();
+        
+        if (!isset($_SESSION)) session_start();
+        $halo_user = $_SESSION['halo_user'];
+        
+        $input['request_id'] = $request->id;
+        $input['user_id'] = AmdUser::where('employee_id', $halo_user->id)->first()->id;
+        
+        AmdSituationReport::create($input);
+        return Redirect::route('requests.manage', $request->slug())
+                ->with('success', '<span class="font-weight-bold">Done!</span><br />Situation report has been added.');
+    }
+    
+    public function feedback(AmdRequest $request) {
+        return view('requests.feedback', compact('request'));
+    }
+    
+    public function submit_feedback(AmdRequest $request) {
+        $input = Input::all();
+        
+        $request->update([
+            'rating' => $input['rating'],
+            'feedback' => $input['feedback']
+        ]);
+        
+        return Redirect('thank_you');
     }
 }

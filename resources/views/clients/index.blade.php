@@ -23,10 +23,11 @@
                             <thead>
                                 <tr class="text-center">
                                     <th><strong>NAME</strong></th>
-                                    <th width="20%"><strong>ADDRESS</strong></th>
+                                    <th width="15%"><strong>ADDRESS</strong></th>
                                     <th width="15%"><strong>CONTACT PERSON</strong></th>
                                     <th width="15%"><strong>MOBILE NO.</strong></th>
                                     <th width="20%"><strong>EMAIL ADDRESS</strong></th>
+                                    <th width="10%"><strong>EMAIL ADDRESS</strong></th>
                                     <th width="10%">&nbsp;</th>
                                 </tr>
                             </thead>
@@ -39,6 +40,7 @@
                                     <td>{{ $client->contact_person }}</td>
                                     <td>{{ $client->mobile_no }}</td>
                                     <td>{{ $client->email }}</td>
+                                    <td><a class="btn btn-primary btn-block btn-sm" href="{{ route('requests.initiate', $client->slug()) }}">Make Request</a></td>
                                     <td class="text-center">
                                         <a title="Edit" href="{{ route('clients.edit', [$client->slug()]) }}"><i class="fas fa-edit"></i></a>&nbsp;&nbsp;
                                         <a title="Trash" href="{{ route('clients.disable', [$client->slug()]) }}" onclick="return confirmDisable()"><i class="fas fa-trash"></i></a>

@@ -1,4 +1,4 @@
-@extends('app', ['page_title' => 'Detailing'])
+@extends('app', ['page_title' => 'Manage Task'])
 
 <?php
 if (!isset($_SESSION)) session_start();
@@ -7,9 +7,14 @@ $halo_user = $_SESSION['halo_user'];
 @section('content')
 <div class="row">
     <div class="col-12" style="margin-bottom: 20px;">
-        <a class="btn btn-primary" href="{{ route('requests.submitted') }}"><i class="fas fa-list"></i> All Submitted Requests</a>
-        <a class="btn btn-success" href="{{ route('requests.mark_assigned', $request->slug()) }}" onclick="return confirmMarkAsAssigned()"><i class="fas fa-check"></i> Mark as Assigned</a>
-        <a class="btn btn-danger" href="{{ route('requests.cancel', $request->slug()) }}"><i class="fas fa-window-close"></i> Reject Request</a>
+        <a class="btn btn-primary" href="{{ route('requests.assigned') }}"><i class="fas fa-list"></i> My Tasks</a>
+        @if ($request->status_id == 4)
+        <a class="btn btn-success" href="{{ route('requests.start', $request->slug()) }}" onclick="return confirmStart()"><i class="fas fa-check"></i> Start Task</a>
+        @elseif ($request->status_id == 5)
+        <a class="btn btn-success" data-toggle="modal" data-target="#modal2" title="Complete Task"><i class="fas fa-check"></i> Complete Task</a>
+        <a class="btn btn-info" data-toggle="modal" data-target="#modal1" title="Situation Report"><i class="fas fa-info"></i> Sitrep</a>
+        @endif
+        <a class="btn btn-secondary" href="{{ route('requests.jmp', $request->slug()) }}" target="_blank"><i class="fas fa-map"></i> JMP</a>
     </div>
 </div>
 <div class="row">
@@ -99,12 +104,12 @@ $halo_user = $_SESSION['halo_user'];
         </table>
         @endif
         
-        <legend>Resource Assignment <span><a data-toggle="modal" data-target="#modal1" title="Add Resource"><i class="fas fa-plus"></i></a></span></legend>
+        <legend>Resources</legend>
         @if (App\AmdResource::where('request_id', $request->id)->count() > 0)
         <table class="table table-hover table-bordered table-striped">
-            @foreach (App\AmdResource::where('request_id', $request->id)->get() as $resource)
+            @foreach (App\AmdResource::where('request_id', $request->id)->orderBy('resource_type')->get() as $resource)
             <tr>
-                <td width="50%">
+                <td>
                      @if ($resource->resource_type == 0)
                      Vehicle ({{ App\AmdVehicle::whereId($resource->resource_id)->first()->plate_number }})
                      @elseif ($resource->resource_type == 1)
@@ -113,16 +118,6 @@ $halo_user = $_SESSION['halo_user'];
                      Police - {{ $resource->quantity }}
                      @endif
                 </td>
-                <td width="30%" class="text-right">
-                     @if ($resource->resource_type == 0)
-                     {{ number_format(App\AmdVehicleType::whereId(App\AmdVehicle::whereId($resource->resource_id)->first()->vehicle_type_id)->first()->average_daily_cost, 2) }}
-                     @elseif ($resource->resource_type == 1)
-                     {{ number_format(DB::table('amd_config')->whereId(1)->first()->commander_daily_cost, 2) }}
-                     @elseif ($resource->resource_type == 2)
-                     {{ number_format((DB::table('amd_config')->whereId(1)->first()->police_daily_cost * $resource->quantity), 2) }}
-                     @endif
-                </td>
-                <td class="text-center"><a href="{{ route('requests.remove_resource', $resource->slug()) }}" title="Remove Resource"><i class="fas fa-trash"></i></a></td>
             </tr>
             @endforeach
         </table>
@@ -130,21 +125,57 @@ $halo_user = $_SESSION['halo_user'];
     </div>
 </div>
 
+<div id="map" hidden></div>
+
 <div class="modal fade" id="modal1" tabindex="-1" role="dialog" aria-labelledby="modal1Title" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title"><strong>Add Resource</strong></h5>
+                <h5 class="modal-title"><strong>Situation Report</strong></h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                {!! Form::model(null, ['route' => ['requests.add_resource', $request->slug()], 'class' => 'form-group']) !!}
-                @include('requests/form4', ['submit_text' => 'Add Resource'])
+                {!! Form::model(null, ['route' => ['requests.add_sitrep', $request->slug()], 'class' => 'form-group']) !!}
+                @include('requests/form5', ['submit_text' => 'Add Report'])
                 {!! Form::close() !!}
             </div>
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="modal2" tabindex="-1" role="dialog" aria-labelledby="modal2Title" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><strong>Principal's Feedback</strong></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                {!! Form::model(null, ['route' => ['requests.complete', $request->slug()], 'class' => 'form-group']) !!}
+                @include('requests/form6', ['submit_text' => 'Complete Task'])
+                {!! Form::close() !!}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="{{ "https://maps.googleapis.com/maps/api/js?key=".App\AmdConfig::whereId(1)->first()->google_places_api_key."&libraries=places&callback=initAutocomplete" }}" async defer></script>
+<script>
+function initAutocomplete() {
+  var map = new google.maps.Map(document.getElementById('map'), {
+    center: {lat: -33.8688, lng: 151.2195},
+    zoom: 13,
+    mapTypeId: 'roadmap'
+  });
+
+  // Create the search box and link it to the UI element.
+  var input = document.getElementById('location');
+  var searchBox = new google.maps.places.SearchBox(input);
+  map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+}
+</script>
 @endsection

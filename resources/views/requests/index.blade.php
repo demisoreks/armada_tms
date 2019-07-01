@@ -4,6 +4,7 @@
 <div class="row">
     <div class="col-12" style="margin-bottom: 20px;">
         <a class="btn btn-primary" href="{{ route('requests.create') }}"><i class="fas fa-plus"></i> New Request</a>
+        <a class="btn btn-primary" href="{{ route('clients.create') }}"><i class="fas fa-plus"></i> New Client</a>
     </div>
 </div>
 <p class="text-info">
