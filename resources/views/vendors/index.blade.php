@@ -23,8 +23,9 @@
                             <thead>
                                 <tr class="text-center">
                                     <th><strong>NAME</strong></th>
+                                    <th width="20%"><strong>CONTACT PERSON</strong></th>
                                     <th width="20%"><strong>MOBILE NO.</strong></th>
-                                    <th width="30%"><strong>EMAIL ADDRESS</strong></th>
+                                    <th width="25%"><strong>EMAIL ADDRESS</strong></th>
                                     <th width="10%">&nbsp;</th>
                                 </tr>
                             </thead>
@@ -33,6 +34,7 @@
                                     @if ($vendor->active)
                                 <tr>
                                     <td>{{ $vendor->name }}</td>
+                                    <td>{{ $vendor->contact_person }}</td>
                                     <td>{{ $vendor->mobile_no }}</td>
                                     <td>{{ $vendor->email }}</td>
                                     <td class="text-center">
@@ -61,6 +63,7 @@
                             <thead>
                                 <tr class="text-center">
                                     <th><strong>NAME</strong></th>
+                                    <th width="20%"><strong>CONTACT PERSON</strong></th>
                                     <th width="20%"><strong>MOBILE NO.</strong></th>
                                     <th width="30%"><strong>EMAIL ADDRESS</strong></th>
                                     <th width="10%">&nbsp;</th>
@@ -71,6 +74,7 @@
                                     @if (!$vendor->active)
                                 <tr>
                                     <td>{{ $vendor->name }}</td>
+                                    <td>{{ $vendor->contact_person }}</td>
                                     <td>{{ $vendor->mobile_no }}</td>
                                     <td>{{ $vendor->email }}</td>
                                     <td class="text-center">

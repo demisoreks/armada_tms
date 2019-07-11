@@ -24,6 +24,7 @@
                                 <tr class="text-center">
                                     <th width="25%"><strong>DESCRIPTION</strong></th>
                                     <th><strong>FEATURES</strong></th>
+                                    <th width="15%"><strong>PICK/DROP COST (=N=)</strong></th>
                                     <th width="15%"><strong>AVERAGE DAILY COST (=N=)</strong></th>
                                     <th width="10%">&nbsp;</th>
                                 </tr>
@@ -34,6 +35,7 @@
                                 <tr>
                                     <td>{{ $vehicle_type->description }}</td>
                                     <td>{{ $vehicle_type->features }}</td>
+                                    <td class="text-right">{{ number_format($vehicle_type->pick_and_drop_cost, 2) }}</td>
                                     <td class="text-right">{{ number_format($vehicle_type->average_daily_cost, 2) }}</td>
                                     <td class="text-center">
                                         <a title="Edit" href="{{ route('vehicle_types.edit', [$vehicle_type->slug()]) }}"><i class="fas fa-edit"></i></a>&nbsp;&nbsp;
@@ -62,6 +64,7 @@
                                 <tr class="text-center">
                                     <th width="25%"><strong>DESCRIPTION</strong></th>
                                     <th><strong>FEATURES</strong></th>
+                                    <th width="15%"><strong>PICK/DROP COST (=N=)</strong></th>
                                     <th width="15%"><strong>AVERAGE DAILY COST (=N=)</strong></th>
                                     <th width="10%">&nbsp;</th>
                                 </tr>
@@ -72,6 +75,7 @@
                                 <tr>
                                     <td>{{ $vehicle_type->description }}</td>
                                     <td>{{ $vehicle_type->features }}</td>
+                                    <td class="text-right">{{ number_format($vehicle_type->pick_and_drop_cost, 2) }}</td>
                                     <td class="text-right">{{ number_format($vehicle_type->average_daily_cost, 2) }}</td>
                                     <td class="text-center">
                                         <a title="Restore" href="{{ route('vehicle_types.enable', [$vehicle_type->slug()]) }}"><i class="fas fa-undo"></i></a>

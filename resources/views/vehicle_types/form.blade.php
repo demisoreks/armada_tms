@@ -11,9 +11,15 @@
     </div>
 </div>
 <div class="form-group row">
-    {!! Form::label('average_daily_cost', 'Average Daily Cost *', ['class' => 'col-md-2 col-form-label']) !!}
+    {!! Form::label('pick_and_drop_cost', 'Pick/Drop Cost', ['class' => 'col-md-2 col-form-label']) !!}
     <div class="col-md-4">
-        {!! Form::number('average_daily_cost', $value = null, ['class' => 'form-control', 'placeholder' => 'Average Daily Cost', 'required' => true, 'maxlength' => 20, 'step' => '0.01']) !!}
+        {!! Form::number('pick_and_drop_cost', $value = null, ['class' => 'form-control', 'placeholder' => 'Pick/Drop Cost', 'maxlength' => 20, 'step' => '0.01']) !!}
+    </div>
+</div>
+<div class="form-group row">
+    {!! Form::label('average_daily_cost', 'Average Daily Cost', ['class' => 'col-md-2 col-form-label']) !!}
+    <div class="col-md-4">
+        {!! Form::number('average_daily_cost', $value = null, ['class' => 'form-control', 'placeholder' => 'Average Daily Cost', 'maxlength' => 20, 'step' => '0.01']) !!}
     </div>
 </div>
 <div class="form-group row">
