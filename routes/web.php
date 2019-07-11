@@ -74,11 +74,11 @@ Route::bind('vehicles', function($value, $route) {
 
 Route::get('clients/{client}/disable', [
     'as' => 'clients.disable', 'uses' => 'ClientsController@disable'
-])->middleware(['auth.user', 'auth.access:'.$link_id.',Admin']);
+])->middleware(['auth.user', 'auth.access:'.$link_id.',Admin,Detailer']);
 Route::get('clients/{client}/enable', [
     'as' => 'clients.enable', 'uses' => 'ClientsController@enable'
-])->middleware(['auth.user', 'auth.access:'.$link_id.',Admin']);
-Route::resource('clients', 'ClientsController')->middleware(['auth.user', 'auth.access:'.$link_id.',Admin']);
+])->middleware(['auth.user', 'auth.access:'.$link_id.',Admin,Detailer']);
+Route::resource('clients', 'ClientsController')->middleware(['auth.user', 'auth.access:'.$link_id.',Admin,Detailer']);
 Route::bind('clients', function($value, $route) {
     return App\AmdClient::findBySlug($value)->first();
 });
@@ -185,7 +185,7 @@ Route::post('requests/{request}/add_service', [
 ])->middleware(['auth.user', 'auth.access:'.$link_id.',Admin,Detailer']);
 Route::get('requests/{client}/initiate', [
     'as' => 'requests.initiate', 'uses' => 'RequestsController@initiate'
-])->middleware(['auth.user', 'auth.access:'.$link_id.',Admin']);
+])->middleware(['auth.user', 'auth.access:'.$link_id.',Admin,Detailer']);
 Route::resource('requests', 'RequestsController')->middleware(['auth.user', 'auth.access:'.$link_id.',Admin,Detailer']);
 Route::bind('requests', function($value, $route) {
     return App\AmdRequest::findBySlug($value)->first();
