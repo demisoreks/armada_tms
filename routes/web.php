@@ -167,26 +167,26 @@ Route::get('requests/submitted', [
 ])->middleware(['auth.user', 'auth.access:'.$link_id.',Detailer,Supervisor']);
 Route::get('requests/{request}/cancel', [
     'as' => 'requests.cancel', 'uses' => 'RequestsController@cancel'
-])->middleware(['auth.user', 'auth.access:'.$link_id.',Admin']);
+])->middleware(['auth.user', 'auth.access:'.$link_id.',Admin,Detailer']);
 Route::get('requests/{request}/submit', [
     'as' => 'requests.submit', 'uses' => 'RequestsController@submit'
-])->middleware(['auth.user', 'auth.access:'.$link_id.',Admin']);
+])->middleware(['auth.user', 'auth.access:'.$link_id.',Admin,Detailer']);
 Route::get('requests/{request_stop}/remove_stop', [
     'as' => 'requests.remove_stop', 'uses' => 'RequestsController@remove_stop'
-])->middleware(['auth.user', 'auth.access:'.$link_id.',Admin']);
+])->middleware(['auth.user', 'auth.access:'.$link_id.',Admin,Detailer']);
 Route::post('requests/{request}/add_stop', [
     'as' => 'requests.add_stop', 'uses' => 'RequestsController@add_stop'
-])->middleware(['auth.user', 'auth.access:'.$link_id.',Admin']);
+])->middleware(['auth.user', 'auth.access:'.$link_id.',Admin,Detailer']);
 Route::get('requests/{request_option}/remove_service', [
     'as' => 'requests.remove_service', 'uses' => 'RequestsController@remove_service'
-])->middleware(['auth.user', 'auth.access:'.$link_id.',Admin']);
+])->middleware(['auth.user', 'auth.access:'.$link_id.',Admin,Detailer']);
 Route::post('requests/{request}/add_service', [
     'as' => 'requests.add_service', 'uses' => 'RequestsController@add_service'
-])->middleware(['auth.user', 'auth.access:'.$link_id.',Admin']);
+])->middleware(['auth.user', 'auth.access:'.$link_id.',Admin,Detailer']);
 Route::get('requests/{client}/initiate', [
     'as' => 'requests.initiate', 'uses' => 'RequestsController@initiate'
 ])->middleware(['auth.user', 'auth.access:'.$link_id.',Admin']);
-Route::resource('requests', 'RequestsController')->middleware(['auth.user', 'auth.access:'.$link_id.',Admin']);
+Route::resource('requests', 'RequestsController')->middleware(['auth.user', 'auth.access:'.$link_id.',Admin,Detailer']);
 Route::bind('requests', function($value, $route) {
     return App\AmdRequest::findBySlug($value)->first();
 });

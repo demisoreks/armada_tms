@@ -266,14 +266,14 @@ use GuzzleHttp\Client;
                                         @if (count(array_intersect($permissions, ['Supervisor'])) != 0)
                                         <a class="nav-link" href="#">Anayltics</a>
                                         @endif
-                                        @if (count(array_intersect($permissions, ['Admin'])) != 0)
+                                        @if (count(array_intersect($permissions, ['Detailer'])) != 0)
                                         <a class="nav-link" href="{{ route('requests.submitted') }}">Detailing</a>
                                         @endif
                                     </nav>
                                 </div>
                             </div> 
                         </div>
-                        @if (count(array_intersect($permissions, ['Admin'])) != 0)
+                        @if (count(array_intersect($permissions, ['Admin','Detailer'])) != 0)
                         <div class="card">
                             <div class="card-header bg-white" id="heading-menu4" style="padding: 0;">
                                 <h5 class="mb-0">
