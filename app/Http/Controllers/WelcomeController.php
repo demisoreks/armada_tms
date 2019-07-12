@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use Session;
 use Lava;
+use App\AmdRegion;
 
 
 class WelcomeController extends Controller
@@ -25,5 +26,9 @@ class WelcomeController extends Controller
     
     public function thank_you() {
          return view('thank_you');
+    }
+    
+    public function taskboard(AmdRegion $region) {
+        return view('taskboard', compact('region'));
     }
 }

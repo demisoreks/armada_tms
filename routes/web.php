@@ -19,6 +19,9 @@ Route::get('/', [
 Route::get('thank_you', [
     'as' => 'thank_you', 'uses' => 'WelcomeController@thank_you'
 ]);
+Route::get('taskboard/{region}', [
+    'as' => 'taskboard', 'uses' => 'WelcomeController@taskboard'
+]);
 
 Route::get('regions/{region}/disable', [
     'as' => 'regions.disable', 'uses' => 'RegionsController@disable'

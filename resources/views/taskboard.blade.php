@@ -8,7 +8,7 @@ use GuzzleHttp\Client;
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>{{ $page_title }} | {{ config('app.name') }}</title>
+        <title>Taskboard | {{ config('app.name') }}</title>
         
         <style type="text/css">
         #map {
@@ -241,107 +241,52 @@ use GuzzleHttp\Client;
             </div>
             <div class="row">
                 <div class="col-12 text-center">
-                    <h1 class="page-header" style="border-bottom: 1px solid #999; padding: 30px 0; margin-bottom: 20px; color: #999;">{{ $page_title }}</h1>
+                    <h1 class="page-header" style="border-bottom: 1px solid #999; padding: 30px 0; margin-bottom: 20px; color: #999;">Taskboard - {{ $region->name }} Region</h1>
                 </div>
             </div>
             @include('commons.message')
             <div class="row">
-                <div class="col-md-2">
-                    <div id="accordion-menu" style="margin-bottom: 10px;">
-                        <div class="card">
-                            <div class="card-header bg-white" id="heading-menu1" style="padding: 0;">
-                                <h5 class="mb-0">
-                                    <button class="btn btn-link" data-toggle="collapse" data-target="#collapse-menu1" aria-expanded="true" aria-controls="collapse-menu1">
-                                        <strong>Task Mgt.</strong>
-                                    </button>
-                                </h5>
-                            </div>
-                            <div id="collapse-menu1" class="collapse @if (!isset($open_menu)) show @endif" aria-labelledby="heading-menu1" data-parent="#accordion-menu">
-                                <div class="card-body">
-                                    <nav class="nav flex-column">
-                                        <a class="nav-link" href="{{ route('welcome') }}">Home</a>
-                                        <a class="nav-link" href="#" data-toggle="modal" data-target="#modal1">Task Board</a>
-                                        @if (count(array_intersect($permissions, ['Commander'])) != 0)
-                                        <a class="nav-link" href="{{ route('requests.assigned') }}">My Tasks</a>
-                                        @endif
-                                        @if (count(array_intersect($permissions, ['Supervisor'])) != 0)
-                                        <a class="nav-link" href="#">Anayltics</a>
-                                        @endif
-                                        @if (count(array_intersect($permissions, ['Detailer'])) != 0)
-                                        <a class="nav-link" href="{{ route('requests.submitted') }}">Detailing</a>
-                                        @endif
-                                    </nav>
-                                </div>
-                            </div> 
-                        </div>
-                        @if (count(array_intersect($permissions, ['Admin','Detailer'])) != 0)
-                        <div class="card">
-                            <div class="card-header bg-white" id="heading-menu4" style="padding: 0;">
-                                <h5 class="mb-0">
-                                    <button class="btn btn-link" data-toggle="collapse" data-target="#collapse-menu4" aria-expanded="true" aria-controls="collapse-menu4">
-                                        <strong>Client Mgt.</strong>
-                                    </button>
-                                </h5>
-                            </div>
-                            <div id="collapse-menu4" class="collapse @if (isset($open_menu) && $open_menu == 'client') show @endif" aria-labelledby="heading-menu4" data-parent="#accordion-menu">
-                                <div class="card-body">
-                                    <nav class="nav flex-column">
-                                        <a class="nav-link" href="{{ route('clients.index') }}">Clients</a>
-                                        <a class="nav-link" href="{{ route('requests.index') }}">Service Requests</a>
-                                        <!--<a class="nav-link" href="#">Invoicing</a>-->
-                                    </nav>
-                                </div>
-                            </div> 
-                        </div>
-                        @endif
-                        @if (count(array_intersect($permissions, ['Detailer'])) != 0)
-                        <div class="card">
-                            <div class="card-header bg-white" id="heading-menu3" style="padding: 0;">
-                                <h5 class="mb-0">
-                                    <button class="btn btn-link" data-toggle="collapse" data-target="#collapse-menu3" aria-expanded="true" aria-controls="collapse-menu3">
-                                        <strong>Resource Mgt.</strong>
-                                    </button>
-                                </h5>
-                            </div>
-                            <div id="collapse-menu3" class="collapse @if (isset($open_menu) && $open_menu == 'resource') show @endif" aria-labelledby="heading-menu3" data-parent="#accordion-menu">
-                                <div class="card-body">
-                                    <nav class="nav flex-column">
-                                        <a class="nav-link" href="{{ route('regions.vehicles.index', App\AmdRegion::whereId(App\AmdUser::where('employee_id', $halo_user->id)->first()->region_id)->first()->slug()) }}">Vehicles</a>
-                                        <a class="nav-link" href="{{ route('downtimes.index') }}">Resource Downtime</a>
-                                    </nav>
-                                </div>
-                            </div> 
-                        </div>
-                        @endif
-                        @if (count(array_intersect($permissions, ['Admin'])) != 0)
-                        <div class="card">
-                            <div class="card-header bg-white" id="heading-menu2" style="padding: 0;">
-                                <h5 class="mb-0">
-                                    <button class="btn btn-link" data-toggle="collapse" data-target="#collapse-menu2" aria-expanded="true" aria-controls="collapse-menu2">
-                                        <strong>Admin</strong>
-                                    </button>
-                                </h5>
-                            </div>
-                            <div id="collapse-menu2" class="collapse @if (isset($open_menu) && $open_menu == 'admin') show @endif" aria-labelledby="heading-menu2" data-parent="#accordion-menu">
-                                <div class="card-body">
-                                    <nav class="nav flex-column">
-                                        <a class="nav-link" href="{{ route('services.index') }}">Services</a>
-                                        <a class="nav-link" href="{{ route('vehicle_types.index') }}">Vehicle Types</a>
-                                        <a class="nav-link" href="{{ route('vendors.index') }}">Vendors</a>
-                                        <a class="nav-link" href="{{ route('users.index') }}">Users</a>
-                                        <a class="nav-link" href="{{ route('regions.index') }}">Regions</a>
-                                        <a class="nav-link" href="{{ route('config') }}">Configuration</a>
-                                    </nav>
-                                </div>
-                            </div> 
-                        </div>
-                        @endif
-                    </div>
-                </div>
-                <div class="col-md-10">
+                <div class="col-md-12">
                     <div class="card">
                         <div class="card-body bg-white" style="padding: 20px;">
-                            @yield('content')
+                            <table class="display-1 table table-condensed table-hover table-striped">
+                                <thead>
+                                    <tr class="text-center">
+                                        <th width="10%"><strong>PICKUP/SERVICE DATE/TIME</strong></th>
+                                        <th><strong>CLIENT INFORMATION</strong></th>
+                                        <th width="15%"><strong>PRINCIPAL'S DETAILS</strong></th>
+                                        <th width="15%"><strong>PICKUP/SERVICE LOCATION</strong></th>
+                                        <th width="15%"><strong>STOPS</strong></th>
+                                        <th width="15%"><strong>COMMANDER(S)</strong></th>
+                                        <th width="10%"><strong>STATUS</strong></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (App\AmdRequest::where('region_id', $region->id)->whereRaw('status_id in (2,4,5)')->get() as $request)
+
+                                    <tr>
+                                        <td>{{ $request->service_date_time }}</td>
+                                        <td>{{ $request->client->name }}<br />{{ $request->client->mobile_no }}<br />{{ $request->client->email }}</td>
+                                        <td>{{ $request->principal_name }}<br />{{ $request->principal_mobile_no }}<br />{{ $request->principal_email }}</td>
+                                        <td>{{ $request->service_location }}</td>
+                                        <td>
+                                            @foreach (App\AmdRequestStop::where('request_id', $request->id)->get() as $stop)
+                                            {{ $stop->address }}<br />
+                                            @endforeach
+                                        </td>
+                                        <td>
+                                            @foreach (App\AmdResource::where('request_id', $request->id)->where('resource_type', 1)->get() as $resource)
+                                            {{ App\AmdUser::whereId($resource->resource_id)->first()->name }}<br />
+                                            @endforeach
+                                        </td>
+                                        <td>
+                                            <h4><span class="badge @if ($request->status_id == 2) badge-danger @elseif ($request->status_id == 4) badge-warning @elseif ($request->status_id == 5) badge-success @endif bad">{{ $request->status->description }}</span></h4>
+                                        </td>
+                                    </tr>
+
+                                    @endforeach
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>

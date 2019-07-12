@@ -1,4 +1,4 @@
-@extends('app', ['page_title' => 'Task Board', 'more' => 2])
+@extends('app', ['page_title' => config('app.name')])
 
 <?php
 use GuzzleHttp\Client;
