@@ -273,6 +273,7 @@ class RequestsController extends Controller
         $halo_user = $_SESSION['halo_user'];
         $user = AmdUser::where('employee_id', $halo_user->id)->first();
         $request_ids = AmdResource::where('resource_type', 1)->where('resource_id', $user->id)->pluck('request_id')->toArray();
+        array_push($request_ids, 0);
         $requests = AmdRequest::whereRaw('id in ('.implode(',', $request_ids).')')->whereRaw('status_id in (4,5)')->get();
         return view('requests.assigned', compact('requests'));
     }
