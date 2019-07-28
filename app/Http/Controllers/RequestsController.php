@@ -228,7 +228,7 @@ class RequestsController extends Controller
             $assignment_email_data = [
                 'name' => $user->name,
                 'location' => $request->service_location,
-                'date' => $service_date_time->format('l, F n, Y'),
+                'date' => $service_date_time->format('l, F j, Y'),
                 'time' => $service_date_time->format('g:i a')
             ];
             
