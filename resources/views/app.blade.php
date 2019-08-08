@@ -367,7 +367,7 @@ use GuzzleHttp\Client;
                             @foreach (App\AmdRegion::where('active', true)->get() as $region)
                             <tr>
                                 <td width="60%">{{ $region->name }}</td>
-                                <td><a class="btn btn-primary" href="{{ route('taskboard', $region->slug()) }}"><i class="fas fa-eye"></i> View Task Board</a></td>
+                                <td><a class="btn btn-primary" href="{{ route('taskboard', $region->slug()) }}" target="_blank"><i class="fas fa-eye"></i> View Task Board</a></td>
                             </tr>
                             @endforeach
                         </table>

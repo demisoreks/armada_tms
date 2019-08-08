@@ -167,7 +167,7 @@ use GuzzleHttp\Client;
                                 </tr>
                                 <tr>
                                     <td>Pickup/Service Date/Time</td>
-                                    <td colspan="2">{{ DateTime::createFromFormat('Y-m-d H:i:s', $request->service_date_time)->format('l, F n, Y') }} {{ DateTime::createFromFormat('Y-m-d H:i:s', $request->service_date_time)->format('g:i a') }}</td>
+                                    <td colspan="2">{{ DateTime::createFromFormat('Y-m-d H:i:s', $request->service_date_time)->format('l, F j, Y') }} {{ DateTime::createFromFormat('Y-m-d H:i:s', $request->service_date_time)->format('g:i a') }}</td>
                                 </tr>
                                 <tr>
                                     <td>Principal's Name</td>
