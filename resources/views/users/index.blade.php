@@ -18,12 +18,13 @@
                             <thead>
                                 <tr class="text-center">
                                     <th width="15%"><strong>USERNAME</strong></th>
-                                    <th width="15%"><strong>CODE NAME</strong></th>
+                                    <th width="12%"><strong>CODE NAME</strong></th>
+                                    <th width="10%"><strong>FULL NAME</strong></th>
                                     <th width="10%"><strong>PICTURE</strong></th>
-                                    <th width="12%"><strong>MOBILE NO.</strong></th>
+                                    <th width="10%"><strong>MOBILE NO.</strong></th>
                                     <th><strong>EMAIL ADDRESS</strong></th>
                                     <th width="10%"><strong>REGION</strong></th>
-                                    <th width="10%">&nbsp;</th>
+                                    <th width="5%">&nbsp;</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -34,6 +35,7 @@
                                 <tr>
                                     <td>{{ $user->username }}</td>
                                     <td>@if ($amd_user->count() > 0) {{ $amd_user->first()->name }} @endif</td>
+                                    <td>@if ($amd_user->count() > 0) {{ $amd_user->first()->full_name }} @endif</td>
                                     <td class="text-center">@if ($amd_user->count() > 0) @if (File::exists('storage/pictures/'.$amd_user->first()->id.'.jpg')) {{ Html::image('storage/pictures/'.$amd_user->first()->id.'.jpg', 'User picture', ['height' => '100px', 'class' => 'rounded-circle']) }} @endif @endif</td>
                                     <td>@if ($amd_user->count() > 0) {{ $amd_user->first()->mobile_no }} @endif</td>
                                     <td>@if ($amd_user->count() > 0) {{ $amd_user->first()->email }} @endif</td>

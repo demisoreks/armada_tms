@@ -329,6 +329,7 @@ use GuzzleHttp\Client;
                                         <a class="nav-link" href="{{ route('vehicle_types.index') }}">Vehicle Types</a>
                                         <a class="nav-link" href="{{ route('vendors.index') }}">Vendors</a>
                                         <a class="nav-link" href="{{ route('users.index') }}">Users</a>
+                                        <a class="nav-link" href="{{ route('states.index') }}">States</a>
                                         <a class="nav-link" href="{{ route('regions.index') }}">Regions</a>
                                         <a class="nav-link" href="{{ route('config') }}">Configuration</a>
                                     </nav>

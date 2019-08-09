@@ -7,6 +7,7 @@ use GuzzleHttp\Client;
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta http-equiv="refresh" content="120">
 
         <title>Taskboard | {{ config('app.name') }}</title>
         
@@ -249,7 +250,7 @@ use GuzzleHttp\Client;
                 <div class="col-md-12">
                     <div class="card">
                         <div class="card-body bg-white" style="padding: 20px;">
-                            <table class="display-1 table table-condensed table-hover table-striped">
+                            <table id="myTable1" class="display-1 table table-condensed table-hover table-striped">
                                 <thead>
                                     <tr class="text-center">
                                         <th width="10%"><strong>PICKUP/SERVICE DATE/TIME</strong></th>

@@ -154,7 +154,7 @@ use GuzzleHttp\Client;
                                 @foreach (App\AmdResource::where('request_id', $request->id)->where('resource_type', 1)->get() as $commander)
                                 <tr>
                                     <td width="30%">Name</td>
-                                    <td width="40%">{{ App\AmdUser::whereId($commander->resource_id)->first()->name }}</td>
+                                    <td width="40%">{{ App\AmdUser::whereId($commander->resource_id)->first()->full_name }}</td>
                                     <td class="text-center" rowspan="2">@if (File::exists('storage/pictures/'.$commander->resource_id.'.jpg')) {{ Html::image('storage/pictures/'.$commander->resource_id.'.jpg', 'Commander picture', ['height' => '120px', 'class' => 'rounded-circle']) }} @endif</td>
                                 </tr>
                                 <tr>

@@ -34,6 +34,11 @@ Route::bind('regions', function($value, $route) {
     return App\AmdRegion::findBySlug($value)->first();
 });
 
+Route::resource('states', 'StatesController')->middleware(['auth.user', 'auth.access:'.$link_id.',Admin']);
+Route::bind('states', function($value, $route) {
+    return App\AmdState::findBySlug($value)->first();
+});
+
 Route::resource('users', 'UsersController')->middleware(['auth.user', 'auth.access:'.$link_id.',Admin']);
 Route::bind('users', function($value, $route) {
     return App\AmdUser::findBySlug($value)->first();

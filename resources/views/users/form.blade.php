@@ -11,6 +11,12 @@
     </div>
 </div>
 <div class="form-group row">
+    {!! Form::label('full_name', 'Full Name *', ['class' => 'col-md-2 col-form-label']) !!}
+    <div class="col-md-4">
+        {!! Form::text('full_name', $value = null, ['class' => 'form-control', 'placeholder' => 'Full Name', 'required' => true, 'maxlength' => 100]) !!}
+    </div>
+</div>
+<div class="form-group row">
     {!! Form::label('mobile_no', 'Mobile No. *', ['class' => 'col-md-2 col-form-label']) !!}
     <div class="col-md-4">
         {!! Form::text('mobile_no', $value = null, ['class' => 'form-control', 'placeholder' => 'Mobile No.', 'required' => true, 'maxlength' => 20]) !!}

@@ -20,4 +20,8 @@ class AmdRegion extends Model
     public function vehicles() {
         return $this->hasMany('App\AmdVehicle');
     }
+    
+    public function states() {
+        return $this->hasMany('App\AmdState');
+    }
 }
