@@ -17,6 +17,8 @@ use App\AmdRequestStop;
 use App\AmdUser;
 use App\AmdResource;
 use App\AmdSituationReport;
+use App\AmdState;
+use App\AmdRegion;
 
 class RequestsController extends Controller
 {
@@ -61,6 +63,8 @@ class RequestsController extends Controller
         $input['service_date_time'] = $input['service_date'].' '.$input['service_time'];
         unset($input['service_date']);
         unset($input['service_time']);
+        $input['region_id'] = AmdState::whereId($input['state_id'])->first()->region_id;
+        unset($input['state_id']);
         $request->update($input);
         return Redirect::route('requests.show', $request->slug())
                 ->with('success', '<span class="font-weight-bold">Done!</span><br />Request details have been updated.');
@@ -199,6 +203,24 @@ class RequestsController extends Controller
                 ->with('success', '<span class="font-weight-bold">Done!</span><br />Resource has been removed.');
     }
     
+    public function transfer(AmdRequest $request) {
+        $input = Input::all();
+        
+        if (!isset($_SESSION)) session_start();
+        $halo_user = $_SESSION['halo_user'];
+        
+        $request->update($input);
+        
+        AmdActivity::create([
+            'employee_id' => $halo_user->id,
+            'detail' => 'A request from '.$request->client->name.' was transferred to '.AmdRegion::whereId($input['region_id'])->first()->name.' region.',
+            'source_ip' => $_SERVER['REMOTE_ADDR']
+        ]);
+        
+        return Redirect::route('requests.submitted')
+                ->with('success', '<span class="font-weight-bold">Completed!</span><br />Request has been transferred.');
+    }
+    
     public function mark_assigned(AmdRequest $request) {
         if (!isset($_SESSION)) session_start();
         $halo_user = $_SESSION['halo_user'];
@@ -235,34 +257,38 @@ class RequestsController extends Controller
             $recipient = $user->email;
             
             Mail::send('emails.assignment', $assignment_email_data, function ($m) use ($recipient) {
-                $m->from('hens@halogensecurity.com', 'Halogen e-Notification Service');
+                $m->from('hens@halogen-group.com', 'Halogen e-Notification Service');
                 $m->to($recipient)->subject('Task Assignment | '. config('app.name'));
             });
         }
         
-        $assigned_email_data = [
-            'name' => $request->client->name,
-            'jmp_link' => $jmp_link
-        ];
+        if ($request->client->email != null && $request->client->email != "") {
+            $assigned_email_data = [
+                'name' => $request->client->name,
+                'jmp_link' => $jmp_link
+            ];
 
-        $client_email = $request->client->email;
+            $client_email = $request->client->email;
 
-        Mail::send('emails.request_assigned', $assigned_email_data, function ($m) use ($client_email) {
-            $m->from('hens@halogensecurity.com', 'Halogen e-Notification Service');
-            $m->to($client_email)->subject('Request Update');
-        });
+            Mail::send('emails.request_assigned', $assigned_email_data, function ($m) use ($client_email) {
+                $m->from('hens@halogen-group.com', 'Halogen e-Notification Service');
+                $m->to($client_email)->subject('Request Update');
+            });
+        }
         
-        $assigned_email_data_p = [
-            'name' => $request->principal_name,
-            'jmp_link' => $jmp_link
-        ];
+        if ($request->principal_email != null && $request->principal_email != "") {
+            $assigned_email_data_p = [
+                'name' => $request->principal_name,
+                'jmp_link' => $jmp_link
+            ];
 
-        $principal_email = $request->principal_email;
+            $principal_email = $request->principal_email;
 
-        Mail::send('emails.request_assigned_p', $assigned_email_data_p, function ($m) use ($principal_email) {
-            $m->from('hens@halogensecurity.com', 'Halogen e-Notification Service');
-            $m->to($principal_email)->subject('Request Update');
-        });
+            Mail::send('emails.request_assigned_p', $assigned_email_data_p, function ($m) use ($principal_email) {
+                $m->from('hens@halogensecurity.com', 'Halogen e-Notification Service');
+                $m->to($principal_email)->subject('Request Update');
+            });
+        }
         
         return Redirect::route('requests.submitted')
                 ->with('success', '<span class="font-weight-bold">Completed!</span><br />Request has been assigned.');

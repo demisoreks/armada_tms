@@ -6,7 +6,7 @@ $halo_user = $_SESSION['halo_user'];
 ?>
 @section('content')
 <p class="text-info">
-    <span class="font-weight-bold">NB:</span><br />This page shows all submitted requests that resources have not been assigned to.<br />Please treat only requests that fall under your region.
+    <span class="font-weight-bold">NB:</span><br />This page shows only requests that fall under your region.
 </p>
 <div class="row">
     <div class="col-12">
@@ -34,7 +34,7 @@ $halo_user = $_SESSION['halo_user'];
                             </thead>
                             <tbody>
                                 @foreach ($requests as $request)
-                                    
+                                    @if ($request->region_id == App\AmdUser::where('employee_id', $halo_user->id)->first()->region_id)
                                 <tr>
                                     <td>{{ App\AmdRequestStatus::where('request_id', $request->id)->where('status_id', 2)->first()->created_at }}</td>
                                     <td>{{ $request->client->name }}<br />{{ $request->client->mobile_no }}<br />{{ $request->client->email }}</td>
@@ -46,12 +46,10 @@ $halo_user = $_SESSION['halo_user'];
                                         @endforeach
                                     </td>
                                     <td>
-                                        @if ($request->region_id == null || $request->region_id == App\AmdUser::where('employee_id', $halo_user->id)->first()->region_id)
-                                        <a class="btn btn-primary btn-block btn-sm" href="{{ route('requests.treat', [$request->slug()]) }}" onclick="return confirmTreat()">Treat Request</a>
-                                        @endif
+                                        <a class="btn btn-primary btn-block btn-sm" href="{{ route('requests.treat', [$request->slug()]) }}">Treat Request</a>
                                     </td>
                                 </tr>
-                                    
+                                    @endif
                                 @endforeach
                             </tbody>
                         </table>

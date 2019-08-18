@@ -10,6 +10,7 @@ $halo_user = $_SESSION['halo_user'];
         <a class="btn btn-primary" href="{{ route('requests.submitted') }}"><i class="fas fa-list"></i> All Submitted Requests</a>
         <a class="btn btn-success" href="{{ route('requests.mark_assigned', $request->slug()) }}" onclick="return confirmMarkAsAssigned()"><i class="fas fa-check"></i> Mark as Assigned</a>
         <a class="btn btn-danger" href="{{ route('requests.cancel', $request->slug()) }}"><i class="fas fa-window-close"></i> Reject Request</a>
+        <a class="btn btn-info" data-toggle="modal" data-target="#modal2"><i class="fas fa-forward"></i> Transfer Request</a>
     </div>
 </div>
 <div class="row">
@@ -142,6 +143,24 @@ $halo_user = $_SESSION['halo_user'];
             <div class="modal-body">
                 {!! Form::model(null, ['route' => ['requests.add_resource', $request->slug()], 'class' => 'form-group']) !!}
                 @include('requests/form4', ['submit_text' => 'Add Resource'])
+                {!! Form::close() !!}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal2" tabindex="-1" role="dialog" aria-labelledby="modal2Title" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><strong>Transfer Request</strong></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                {!! Form::model(null, ['route' => ['requests.transfer', $request->slug()], 'class' => 'form-group']) !!}
+                @include('requests/form8', ['submit_text' => 'Transfer'])
                 {!! Form::close() !!}
             </div>
         </div>

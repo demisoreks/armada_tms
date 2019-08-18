@@ -134,6 +134,9 @@ Route::put('config/update', [
     'as' => 'config.update', 'uses' => 'ConfigController@update'
 ])->middleware(['auth.user', 'auth.access:'.$link_id.',Admin']);
 
+Route::post('requests/{request}/transfer', [
+    'as' => 'requests.transfer', 'uses' => 'RequestsController@transfer'
+])->middleware(['auth.user', 'auth.access:'.$link_id.',Detailer']);
 Route::post('requests/{request}/submit_feedback', [
     'as' => 'requests.submit_feedback', 'uses' => 'RequestsController@submit_feedback'
 ]);
