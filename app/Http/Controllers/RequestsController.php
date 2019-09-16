@@ -243,6 +243,7 @@ class RequestsController extends Controller
         $service_date_time = DateTime::createFromFormat('Y-m-d H:i:s', $request->service_date_time);
         $jmp_link = config('app.url')."/requests/".$request->slug()."/jmp";
         $commanders = AmdResource::where('request_id', $request->id)->where('resource_type', 1)->get();
+        $app_link = config('app.url')."/requests/assigned";
         
         foreach ($commanders as $commander) {
             $user = AmdUser::whereId($commander->resource_id)->first();
@@ -251,13 +252,14 @@ class RequestsController extends Controller
                 'name' => $user->name,
                 'location' => $request->service_location,
                 'date' => $service_date_time->format('l, F j, Y'),
-                'time' => $service_date_time->format('g:i a')
+                'time' => $service_date_time->format('g:i a'),
+                'app_link' => $app_link
             ];
             
             $recipient = $user->email;
             
             Mail::send('emails.assignment', $assignment_email_data, function ($m) use ($recipient) {
-                $m->from('hens@halogen-group.com', 'Halogen e-Notification Service');
+                $m->from('hens@halogen-group.com', 'Armada Halogen');
                 $m->to($recipient)->subject('Task Assignment | '. config('app.name'));
             });
         }
@@ -271,7 +273,7 @@ class RequestsController extends Controller
             $client_email = $request->client->email;
 
             Mail::send('emails.request_assigned', $assigned_email_data, function ($m) use ($client_email) {
-                $m->from('hens@halogen-group.com', 'Halogen e-Notification Service');
+                $m->from('hens@halogen-group.com', 'Armada Halogen');
                 $m->to($client_email)->subject('Request Update');
             });
         }
@@ -285,7 +287,7 @@ class RequestsController extends Controller
             $principal_email = $request->principal_email;
 
             Mail::send('emails.request_assigned_p', $assigned_email_data_p, function ($m) use ($principal_email) {
-                $m->from('hens@halogensecurity.com', 'Halogen e-Notification Service');
+                $m->from('hens@halogensecurity.com', 'Armada Halogen');
                 $m->to($principal_email)->subject('Request Update');
             });
         }
@@ -356,7 +358,7 @@ class RequestsController extends Controller
             $client_email = $request->client->email;
 
             Mail::send('emails.request_completed', $completed_email_data, function ($m) use ($client_email) {
-                $m->from('hens@halogensecurity.com', 'Halogen e-Notification Service');
+                $m->from('hens@halogensecurity.com', 'Armada Halogen');
                 $m->to($client_email)->subject('Task Completed');
             });
 
@@ -369,7 +371,7 @@ class RequestsController extends Controller
             $principal_email = $request->principal_email;
 
             Mail::send('emails.request_completed_p', $completed_email_data_p, function ($m) use ($principal_email) {
-                $m->from('hens@halogensecurity.com', 'Halogen e-Notification Service');
+                $m->from('hens@halogensecurity.com', 'Armada Halogen');
                 $m->to($principal_email)->subject('Task Completed');
             });
         } else {
@@ -383,7 +385,7 @@ class RequestsController extends Controller
             $client_email = $request->client->email;
 
             Mail::send('emails.request_completed_feedback', $completed_email_data, function ($m) use ($client_email) {
-                $m->from('hens@halogensecurity.com', 'Halogen e-Notification Service');
+                $m->from('hens@halogensecurity.com', 'Armada Halogen');
                 $m->to($client_email)->subject('Task Completed | Feedback Required');
             });
 
