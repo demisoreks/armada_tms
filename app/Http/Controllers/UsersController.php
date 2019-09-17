@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Redirect;
 use Input;
 use DB;
+use Image;
+use Storage;
 use App\AccEmployee;
 use App\AccRole;
 use App\AccEmployeeRole;
@@ -65,7 +67,18 @@ class UsersController extends Controller
                 }
             }
             if (Input::hasFile('picture')) {
-                Input::file('picture')->storeAs('public/pictures', $user->id.'.jpg');
+                $img = Image::make(Input::file('picture')->getRealPath());
+                if ($img->width() > $img->height()) {
+                    $img->resize(null, 300, function ($constraint) {
+                        $constraint->aspectRatio();
+                    });
+                } else {
+                    $img->resize(300, null, function ($constraint) {
+                        $constraint->aspectRatio();
+                    });
+                }
+                $img->crop(300, 300);
+                Storage::put('public/pictures/'.$user->id.'.jpg', $img->encode());
             }
             return Redirect::route('users.index')
                     ->with('success', '<span class="font-weight-bold">Successful!</span><br />User has been updated.');
