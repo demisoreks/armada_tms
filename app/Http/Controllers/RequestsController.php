@@ -167,7 +167,10 @@ class RequestsController extends Controller
     public function submitted() {
         $status = AmdStatus::where('description', 'Submitted')->first();
         $requests = AmdRequest::where('status_id', $status->id)->get();
-        return view('requests.submitted', compact('requests'));
+        $other_requests = AmdRequest::whereIn('status_id', function ($query) {
+            $query->select('id')->from('amd_status')->whereRaw('description in ("Assigned", "Acknowledged", "Started")');
+        })->get();
+        return view('requests.submitted', compact('requests', 'other_requests'));
     }
     
     public function treat(AmdRequest $request) {
@@ -494,5 +497,29 @@ class RequestsController extends Controller
         
         return Redirect::route('requests.assigned')
                 ->with('success', '<span class="font-weight-bold">Completed!</span><br />Request has been acknowledged.');
+    }
+    
+    public function retreat(AmdRequest $request) {
+        if (!isset($_SESSION)) session_start();
+        $halo_user = $_SESSION['halo_user'];
+        
+        $status = AmdStatus::where('description', 'Submitted')->first();
+        
+        $request->update([
+            'status_id' => $status->id
+        ]);
+        AmdRequestStatus::create([
+            'request_id' => $request->id,
+            'status_id' => $status->id,
+            'updated_by' => $halo_user->id
+        ]);
+        
+        AmdActivity::create([
+            'employee_id' => $halo_user->id,
+            'detail' => 'A request was marked for re-assignment for '.$request->client->name.'.',
+            'source_ip' => $_SERVER['REMOTE_ADDR']
+        ]);
+        
+        return view('requests.treat', compact('request'));
     }
 }
