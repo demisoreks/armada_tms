@@ -40,7 +40,7 @@ if (count($service_date_time) > 1) {
 <div class="form-group row">
     {!! Form::label('additional_information', 'Additional Information', ['class' => 'col-md-4 col-form-label']) !!}
     <div class="col-md-6">
-        {!! Form::textarea('additional_information', $value = null, ['class' => 'form-control', 'placeholder' => 'Additional Information', 'maxlength' => 1000]) !!}
+        {!! Form::textarea('additional_information', $value = null, ['class' => 'form-control', 'placeholder' => 'Additional Information, e.g., flight details, special requests, etc.', 'maxlength' => 1000]) !!}
     </div>
 </div>
 <div class="form-group row">

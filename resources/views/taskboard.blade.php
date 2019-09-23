@@ -263,7 +263,9 @@ use GuzzleHttp\Client;
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach (App\AmdRequest::where('region_id', $region->id)->whereRaw('status_id in (2,4,5)')->get() as $request)
+                                    @foreach (App\AmdRequest::where('region_id', $region->id)->whereIn('status_id', function ($query) {
+                                        $query->select('id')->from('amd_status')->whereRaw('description in ("Submitted", "Assigned", "Acknowledged", "Started")');
+                                    })->get() as $request)
 
                                     <tr>
                                         <td>{{ $request->service_date_time }}</td>
@@ -280,8 +282,8 @@ use GuzzleHttp\Client;
                                             {{ App\AmdUser::whereId($resource->resource_id)->first()->name }}<br />
                                             @endforeach
                                         </td>
-                                        <td>
-                                            <h4><span class="badge @if ($request->status_id == 2) badge-danger @elseif ($request->status_id == 4) badge-warning @elseif ($request->status_id == 5) badge-success @endif bad">{{ $request->status->description }}</span></h4>
+                                        <td align="center">
+                                            <h5><span class="badge @if ($request->status->description == 'Submitted') badge-danger @elseif ($request->status->description == 'Assigned') badge-warning @elseif ($request->status->description == 'Started') badge-success @elseif ($request->status->description == 'Acknowledged') badge-info @endif badge-pill">{{ $request->status->description }}</span></h5>
                                         </td>
                                     </tr>
 

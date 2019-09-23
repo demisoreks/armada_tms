@@ -33,10 +33,14 @@ $halo_user = $_SESSION['halo_user'];
                     </td>
                     <td>{{ $request->status->description }}</td>
                     <td>
-                        <a class="btn btn-primary btn-block btn-sm" href="{{ route('requests.jmp', [$request->slug()]) }}" target="_blank">JMP</a>
+                        <a class="btn btn-warning btn-block btn-sm" href="{{ route('requests.jmp', [$request->slug()]) }}" target="_blank">JMP</a>
                     </td>
                     <td>
+                        @if ($request->status->description == "Assigned")
+                        <a class="btn btn-info btn-block btn-sm" href="{{ route('requests.acknowledge', [$request->slug()]) }}">Acknowledge</a>
+                        @else
                         <a class="btn btn-primary btn-block btn-sm" href="{{ route('requests.manage', [$request->slug()]) }}">Manage</a>
+                        @endif
                     </td>
                 </tr>
 

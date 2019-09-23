@@ -158,6 +158,9 @@ Route::get('requests/{request}/jmp', [
 Route::get('requests/{request}/manage', [
     'as' => 'requests.manage', 'uses' => 'RequestsController@manage'
 ])->middleware(['auth.user', 'auth.access:'.$link_id.',Commander']);
+Route::get('requests/{request}/acknowledge', [
+    'as' => 'requests.acknowledge', 'uses' => 'RequestsController@acknowledge'
+])->middleware(['auth.user', 'auth.access:'.$link_id.',Commander']);
 Route::get('requests/assigned', [
     'as' => 'requests.assigned', 'uses' => 'RequestsController@assigned'
 ])->middleware(['auth.user', 'auth.access:'.$link_id.',Commander']);

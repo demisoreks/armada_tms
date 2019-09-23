@@ -8,9 +8,9 @@ $halo_user = $_SESSION['halo_user'];
 <div class="row">
     <div class="col-12" style="margin-bottom: 20px;">
         <a class="btn btn-primary" href="{{ route('requests.assigned') }}"><i class="fas fa-list"></i> My Tasks</a>
-        @if ($request->status_id == 4)
+        @if ($request->status->description == "Assigned" || $request->status->description == "Acknowledged")
         <a class="btn btn-success" href="{{ route('requests.start', $request->slug()) }}" onclick="return confirmStart()"><i class="fas fa-check"></i> Start Task</a>
-        @elseif ($request->status_id == 5)
+        @elseif ($request->status->description == "Started")
         <a class="btn btn-success" data-toggle="modal" data-target="#modal2" title="Complete Task"><i class="fas fa-check"></i> Complete Task</a>
         <a class="btn btn-info" data-toggle="modal" data-target="#modal1" title="Situation Report"><i class="fas fa-info"></i> Sitrep</a>
         @endif
