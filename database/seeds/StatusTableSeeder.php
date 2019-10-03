@@ -18,7 +18,7 @@ class StatusTableSeeder extends Seeder
             ['description' => 'Submitted'],
             ['description' => 'Returned'],
             ['description' => 'Assigned'],
-            ['description' => 'Task Started'],
+            ['description' => 'Started'],
             ['description' => 'Completed'],
             ['description' => 'Cancelled']
         ];
