@@ -83,10 +83,11 @@ $halo_user = $_SESSION['halo_user'];
         <table class="table table-hover table-bordered table-striped">
             @foreach (App\AmdRequestOption::where('request_id', $request->id)->get() as $request_option)
             <tr>
-                <td width="100%">{{ App\AmdService::whereId(App\AmdOption::whereId($request_option->option_id)->first()->service_id)->first()->description }} | {{ App\AmdOption::whereId($request_option->option_id)->first()->description }}</td>
+                <td width="60%">{{ App\AmdService::whereId(App\AmdOption::whereId($request_option->option_id)->first()->service_id)->first()->description }} | {{ App\AmdOption::whereId($request_option->option_id)->first()->description }}</td>
+                <td>{{ date('M j', strtotime($request_option->start_date)) }} - {{ date('M j', strtotime($request_option->end_date)) }}</td>
             </tr>
             <tr>
-                <td>
+                <td colspan="2">
                     <strong>Requirements</strong><br />
                     @foreach (App\AmdRequirement::where('option_id', $request_option->option_id)->get() as $requirement)
                         @if ($requirement->other_requirement_type == 0)

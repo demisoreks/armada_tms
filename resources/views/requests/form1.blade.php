@@ -11,6 +11,18 @@
     </div>
 </div>
 <div class="form-group row">
+    {!! Form::label('start_date', 'Start Date *', ['class' => 'col-md-4 col-form-label']) !!}
+    <div class="col-md-6">
+        {!! Form::date('start_date', $value = null, ['class' => 'form-control', 'required' => true]) !!}
+    </div>
+</div>
+<div class="form-group row">
+    {!! Form::label('end_date', 'End Date *', ['class' => 'col-md-4 col-form-label']) !!}
+    <div class="col-md-6">
+        {!! Form::date('end_date', $value = null, ['class' => 'form-control', 'required' => true]) !!}
+    </div>
+</div>
+<div class="form-group row">
     <div class="col-md-10 offset-md-4">
         {!! Form::submit($submit_text, ['class' => 'btn btn-primary']) !!}
     </div>

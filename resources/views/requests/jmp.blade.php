@@ -124,13 +124,13 @@ use GuzzleHttp\Client;
     <body style="background-color: #fff;">
         <div class="row">
             <div class="col-lg-6 offset-lg-3">
-                <h2 class="text-center">Journey Management Plan</h2>
+                <h2 class="text-center font-weight-bold">Journey Management Plan</h2>
                 <table class="table table-bordered">
                     <tr>
                         <td>
-                            <table class="table table-hover table-striped">
+                            <table class="table table-hover table-bordered">
                                 <tr>
-                                    <th colspan="3"><h4>Commander(s)</h4></th>
+                                    <th colspan="3"><h4 class="font-weight-bold">Commander(s)</h4></th>
                                 </tr>
                                 @foreach (App\AmdResource::where('request_id', $request->id)->where('resource_type', 1)->get() as $commander)
                                 <tr>
@@ -144,7 +144,18 @@ use GuzzleHttp\Client;
                                 </tr>
                                 @endforeach
                                 <tr>
-                                    <th colspan="3"><h4>Request Details</h4></th>
+                                    <th colspan="3"><h4 class="font-weight-bold">Duty Officer</h4></th>
+                                </tr>
+                                <tr>
+                                    <td width="30%">Name</td>
+                                    <td width="40%" colspan="2">{{ App\AmdUser::where('employee_id', App\AmdRequestStatus::where('request_id', $request->id)->where('status_id', App\AmdStatus::where('description', 'Assigned')->first()->id)->orderBy('created_at', 'desc')->first()->updated_by)->first()->full_name }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Mobile No.</td>
+                                    <td colspan="2">{{ App\AmdUser::where('employee_id', App\AmdRequestStatus::where('request_id', $request->id)->where('status_id', App\AmdStatus::where('description', 'Assigned')->first()->id)->orderBy('created_at', 'desc')->first()->updated_by)->first()->mobile_no }}</td>
+                                </tr>
+                                <tr>
+                                    <th colspan="3"><h4 class="font-weight-bold">Request Details</h4></th>
                                 </tr>
                                 <tr>
                                     <td>Pickup/Service Date/Time</td>
@@ -167,16 +178,17 @@ use GuzzleHttp\Client;
                                     <td colspan="2">{{ $request->additional_information }}</td>
                                 </tr>
                                 <tr>
-                                    <th colspan="3"><h4>Services</h4></th>
+                                    <th colspan="3"><h4 class="font-weight-bold">Services</h4></th>
                                 </tr>
                                 @foreach (App\AmdRequestOption::where('request_id', $request->id)->get() as $request_option)
                                 <tr>
-                                    <td colspan="3">{{ $request_option->option->service->description }} | {{ $request_option->option->description }}</td>
+                                    <td colspan="2">{{ $request_option->option->service->description }} | {{ $request_option->option->description }}</td>
+                                    <td>{{ date('M j', strtotime($request_option->start_date)) }} - {{ date('M j', strtotime($request_option->end_date)) }}</td>
                                 </tr>
                                 @endforeach
                                 @if (App\AmdResource::where('request_id', $request->id)->where('resource_type', '<>', '1')->count() > 0)
                                 <tr>
-                                    <th colspan="3"><h4>Assigned Resources</h4></th>
+                                    <th colspan="3"><h4 class="font-weight-bold">Assigned Resources</h4></th>
                                 </tr>
                                 @foreach (App\AmdResource::where('request_id', $request->id)->where('resource_type', '<>', '1')->get() as $resource)
                                 <tr>
@@ -191,7 +203,7 @@ use GuzzleHttp\Client;
                                 @endforeach
                                 @endif
                                 <tr>
-                                    <th colspan="3"><h4>Route(s)</h4></th>
+                                    <th colspan="3"><h4 class="font-weight-bold">Route(s)</h4></th>
                                 </tr>
                                 <tr>
                                     <td>Start</td>

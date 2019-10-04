@@ -63,7 +63,8 @@
         <table class="table table-hover table-bordered table-striped">
             @foreach (App\AmdRequestOption::where('request_id', $request->id)->get() as $request_option)
             <tr>
-                <td width="80%">{{ App\AmdService::whereId(App\AmdOption::whereId($request_option->option_id)->first()->service_id)->first()->description }} | {{ App\AmdOption::whereId($request_option->option_id)->first()->description }}</td>
+                <td width="50%">{{ App\AmdService::whereId(App\AmdOption::whereId($request_option->option_id)->first()->service_id)->first()->description }} | {{ App\AmdOption::whereId($request_option->option_id)->first()->description }}</td>
+                <td width="30%">{{ date('M j', strtotime($request_option->start_date)) }} - {{ date('M j', strtotime($request_option->end_date)) }}</td>
                 <td class="text-center"><a href="{{ route('requests.remove_service', $request_option->slug()) }}" title="Remove Service"><i class="fas fa-trash"></i></a></td>
             </tr>
             @endforeach
