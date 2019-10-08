@@ -109,6 +109,7 @@ use GuzzleHttp\Client;
         {!! Html::style('css/app.css') !!}
         {!! Html::style('css/mdb.min.css') !!}
         {!! Html::style('css/datatables.min.css') !!}
+        {!! Html::style('css/responsive.dataTables.min.css') !!}
         {!! Html::style('fontawesome/css/all.css') !!}
         
         {!! Html::script('js/jquery-3.3.1.min.js') !!}
@@ -116,6 +117,7 @@ use GuzzleHttp\Client;
         {!! Html::script('js/app.js') !!}
         {!! Html::script('js/mdb.min.js') !!}
         {!! Html::script('js/datatables.min.js') !!}
+        {!! Html::script('js/dataTables.responsive.min.js') !!}
         
         <script type="text/javascript">
             $(document).ready(function () {

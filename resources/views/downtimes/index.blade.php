@@ -19,14 +19,14 @@
                 </div>
                 <div id="collapse3" class="collapse show" aria-labelledby="heading3" data-parent="#accordion1">
                     <div class="card-body">
-                        <table id="myTable1" class="display-1 table table-condensed table-hover table-striped">
+                        <table id="myTable1" class="display-1 table table-condensed table-hover table-striped responsive" width="100%">
                             <thead>
                                 <tr class="text-center">
                                     <th width="20%"><strong>START DATE/TIME</strong></th>
                                     <th width="20%"><strong>END DATE/TIME</strong></th>
                                     <th><strong>RESOURCE</strong></th>
                                     <th width="20%"><strong>RESOURCE TYPE</strong></th>
-                                    <th width="10%">&nbsp;</th>
+                                    <th width="10%" data-priority="1">&nbsp;</th>
                                 </tr>
                             </thead>
                             <tbody>

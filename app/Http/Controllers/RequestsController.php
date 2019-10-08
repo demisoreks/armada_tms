@@ -370,58 +370,66 @@ class RequestsController extends Controller
                 'feedback' => $input['feedback']
             ]);
             
-            $completed_email_data = [
-                'name' => $request->client->name,
-                'principal_name' => $request->principal_name,
-                'rating' => $input['rating'],
-                'feedback' => $input['feedback']
-            ];
+            if ($request->client->email != null && $request->client->email != "") {
+                $completed_email_data = [
+                    'name' => $request->client->name,
+                    'principal_name' => $request->principal_name,
+                    'rating' => $input['rating'],
+                    'feedback' => $input['feedback']
+                ];
 
-            $client_email = $request->client->email;
+                $client_email = $request->client->email;
 
-            Mail::send('emails.request_completed', $completed_email_data, function ($m) use ($client_email) {
-                $m->from('hens@halogensecurity.com', 'Armada Halogen');
-                $m->to($client_email)->subject('Task Completed');
-            });
+                Mail::send('emails.request_completed', $completed_email_data, function ($m) use ($client_email) {
+                    $m->from('hens@halogensecurity.com', 'Armada Halogen');
+                    $m->to($client_email)->subject('Task Completed');
+                });
+            }
 
-            $completed_email_data_p = [
-                'name' => $request->principal_name,
-                'rating' => $input['rating'],
-                'feedback' => $input['feedback']
-            ];
+            if ($request->principal_email != null && $request->principal_email != "") {
+                $completed_email_data_p = [
+                    'name' => $request->principal_name,
+                    'rating' => $input['rating'],
+                    'feedback' => $input['feedback']
+                ];
 
-            $principal_email = $request->principal_email;
+                $principal_email = $request->principal_email;
 
-            Mail::send('emails.request_completed_p', $completed_email_data_p, function ($m) use ($principal_email) {
-                $m->from('hens@halogensecurity.com', 'Armada Halogen');
-                $m->to($principal_email)->subject('Task Completed');
-            });
+                Mail::send('emails.request_completed_p', $completed_email_data_p, function ($m) use ($principal_email) {
+                    $m->from('hens@halogensecurity.com', 'Armada Halogen');
+                    $m->to($principal_email)->subject('Task Completed');
+                });
+            }
         } else {
             $feedback_link = config('app.url')."/requests/".$request->slug()."/feedback";
             
-            $completed_email_data = [
-                'name' => $request->client->name,
-                'feedback_link' => $feedback_link
-            ];
+            if ($request->client->email != null && $request->client->email != "") {
+                $completed_email_data = [
+                    'name' => $request->client->name,
+                    'feedback_link' => $feedback_link
+                ];
 
-            $client_email = $request->client->email;
+                $client_email = $request->client->email;
 
-            Mail::send('emails.request_completed_feedback', $completed_email_data, function ($m) use ($client_email) {
-                $m->from('hens@halogensecurity.com', 'Armada Halogen');
-                $m->to($client_email)->subject('Task Completed | Feedback Required');
-            });
+                Mail::send('emails.request_completed_feedback', $completed_email_data, function ($m) use ($client_email) {
+                    $m->from('hens@halogensecurity.com', 'Armada Halogen');
+                    $m->to($client_email)->subject('Task Completed | Feedback Required');
+                });
+            }
 
-            $completed_email_data_p = [
-                'name' => $request->principal_name,
-                'feedback_link' => $feedback_link
-            ];
+            if ($request->principal_email != null && $request->principal_email != "") {
+                $completed_email_data_p = [
+                    'name' => $request->principal_name,
+                    'feedback_link' => $feedback_link
+                ];
 
-            $principal_email = $request->principal_email;
+                $principal_email = $request->principal_email;
 
-            Mail::send('emails.request_completed_p_feedback', $completed_email_data_p, function ($m) use ($principal_email) {
-                $m->from('hens@halogensecurity.com', 'Halogen e-Notification Service');
-                $m->to($principal_email)->subject('Task Completed | Feedback Required');
-            });
+                Mail::send('emails.request_completed_p_feedback', $completed_email_data_p, function ($m) use ($principal_email) {
+                    $m->from('hens@halogensecurity.com', 'Halogen e-Notification Service');
+                    $m->to($principal_email)->subject('Task Completed | Feedback Required');
+                });
+            }
         }
         
         $status = AmdStatus::where('description', 'Completed')->first();
