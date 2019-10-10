@@ -254,7 +254,7 @@ use GuzzleHttp\Client;
                             <div class="card-header bg-white" id="heading-menu1" style="padding: 0;">
                                 <h5 class="mb-0">
                                     <button class="btn btn-link" data-toggle="collapse" data-target="#collapse-menu1" aria-expanded="true" aria-controls="collapse-menu1">
-                                        <strong>Task Mgt.</strong>
+                                        <strong>General</strong>
                                     </button>
                                 </h5>
                             </div>
@@ -263,11 +263,42 @@ use GuzzleHttp\Client;
                                     <nav class="nav flex-column">
                                         <a class="nav-link" href="{{ route('welcome') }}">Home</a>
                                         <a class="nav-link" href="#" data-toggle="modal" data-target="#modal1">Task Board</a>
+                                    </nav>
+                                </div>
+                            </div> 
+                        </div>
+                        @if (count(array_intersect($permissions, ['Supervisor'])) != 0)
+                        <div class="card">
+                            <div class="card-header bg-white" id="heading-menu5" style="padding: 0;">
+                                <h5 class="mb-0">
+                                    <button class="btn btn-link" data-toggle="collapse" data-target="#collapse-menu6" aria-expanded="true" aria-controls="collapse-menu6">
+                                        <strong>Analytics</strong>
+                                    </button>
+                                </h5>
+                            </div>
+                            <div id="collapse-menu6" class="collapse @if (isset($open_menu) && $open_menu == 'analytics') show @endif" aria-labelledby="heading-menu6" data-parent="#accordion-menu">
+                                <div class="card-body">
+                                    <nav class="nav flex-column">
+                                        <a class="nav-link" href="{{ route('analytics.feedback') }}">Feedback</a>
+                                    </nav>
+                                </div>
+                            </div> 
+                        </div>
+                        @endif
+                        @if (count(array_intersect($permissions, ['Commander','Detailer'])) != 0)
+                        <div class="card">
+                            <div class="card-header bg-white" id="heading-menu5" style="padding: 0;">
+                                <h5 class="mb-0">
+                                    <button class="btn btn-link" data-toggle="collapse" data-target="#collapse-menu5" aria-expanded="true" aria-controls="collapse-menu5">
+                                        <strong>Task Mgt.</strong>
+                                    </button>
+                                </h5>
+                            </div>
+                            <div id="collapse-menu5" class="collapse @if (isset($open_menu) && $open_menu == 'task') show @endif" aria-labelledby="heading-menu5" data-parent="#accordion-menu">
+                                <div class="card-body">
+                                    <nav class="nav flex-column">
                                         @if (count(array_intersect($permissions, ['Commander'])) != 0)
                                         <a class="nav-link" href="{{ route('requests.assigned') }}">My Tasks</a>
-                                        @endif
-                                        @if (count(array_intersect($permissions, ['Supervisor'])) != 0)
-                                        <a class="nav-link" href="#">Anayltics</a>
                                         @endif
                                         @if (count(array_intersect($permissions, ['Detailer'])) != 0)
                                         <a class="nav-link" href="{{ route('requests.submitted') }}">Detailing</a>
@@ -276,6 +307,7 @@ use GuzzleHttp\Client;
                                 </div>
                             </div> 
                         </div>
+                        @endif
                         @if (count(array_intersect($permissions, ['Admin','Detailer'])) != 0)
                         <div class="card">
                             <div class="card-header bg-white" id="heading-menu4" style="padding: 0;">

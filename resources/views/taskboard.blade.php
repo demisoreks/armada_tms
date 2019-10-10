@@ -247,10 +247,13 @@ use GuzzleHttp\Client;
             </div>
             @include('commons.message')
             <div class="row">
-                <div class="col-md-12">
-                    <div class="card">
-                        <div class="card-body bg-white" style="padding: 20px;">
-                            <table id="myTable1" class="display-1 table table-condensed table-hover table-striped">
+                <div class="col-md-9">
+                    <div class="card" style="margin-bottom: 20px;">
+                        <div class="card-header bg-white">
+                            <strong>TASK LIST</strong>
+                        </div>
+                        <div class="card-body bg-white">
+                            <table id="myTable1" class="display-1 table table-condensed table-hover table-striped responsive" width="100%">
                                 <thead>
                                     <tr class="text-center">
                                         <th width="10%"><strong>PICKUP/SERVICE DATE/TIME</strong></th>
@@ -258,8 +261,8 @@ use GuzzleHttp\Client;
                                         <th width="15%"><strong>PRINCIPAL'S DETAILS</strong></th>
                                         <th width="15%"><strong>PICKUP/SERVICE LOCATION</strong></th>
                                         <th width="15%"><strong>STOPS</strong></th>
-                                        <th width="15%"><strong>COMMANDER(S)</strong></th>
-                                        <th width="10%"><strong>STATUS</strong></th>
+                                        <th width="15%" data-priority="1"><strong>COMMANDER(S)</strong></th>
+                                        <th width="15%" data-priority="1"><strong>STATUS</strong></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -290,6 +293,37 @@ use GuzzleHttp\Client;
                                     @endforeach
                                 </tbody>
                             </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card" style="margin-bottom: 20px;">
+                        <div class="card-header bg-white">
+                            <strong>STATUS DISTRIBUTION</strong>
+                        </div>
+                        <div class="card-body bg-white">
+                            {!! $status_chart->container() !!}
+                            {!! $status_chart->script() !!}
+                        </div>
+                    </div>
+                    <div class="card" style="margin-bottom: 20px;">
+                        <div class="card-header bg-white">
+                            <strong>STATISTICS</strong>
+                        </div>
+                        <div class="card-body bg-white">
+                            <div class="row">
+                                <div class="col-sm-6 text-center text-danger">
+                                    <h1>{{ App\AmdRequest::where('service_date_time', '<', date('Y-m-d'))->where('region_id', $region->id)->whereIn('status_id', function ($query) {
+                                        $query->select('id')->from('amd_status')->whereRaw('description in ("Submitted", "Assigned", "Acknowledged", "Started")');
+                                    })->count() }}</h1>
+                                    PENDING CLOSURE
+                                </div>
+                                <div class="col-sm-6 text-center text-success">
+                                    <h1>{{ App\AmdRequestStatus::where('status_id', App\AmdStatus::where('description', 'Completed')->first()->id)->where('created_at', 'like', date('Y-m-d').'%')->count() }}</h1>
+                                    COMPLETED NATIONWIDE TODAY
+                                </div>
+                            </div>
+                            <div class="alert alert-danger">All Commanders must close tasks promptly to avoid penalties!</div>
                         </div>
                     </div>
                 </div>

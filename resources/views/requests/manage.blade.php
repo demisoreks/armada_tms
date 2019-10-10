@@ -1,4 +1,4 @@
-@extends('app', ['page_title' => 'Manage Task'])
+@extends('app', ['page_title' => 'Manage Task', 'open_menu' => 'task'])
 
 <?php
 if (!isset($_SESSION)) session_start();

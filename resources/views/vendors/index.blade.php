@@ -19,14 +19,14 @@
                 </div>
                 <div id="collapse3" class="collapse show" aria-labelledby="heading3" data-parent="#accordion1">
                     <div class="card-body">
-                        <table id="myTable1" class="display-1 table table-condensed table-hover table-striped">
+                        <table id="myTable1" class="display-1 table table-condensed table-hover table-striped responsive" width="100%">
                             <thead>
                                 <tr class="text-center">
                                     <th><strong>NAME</strong></th>
                                     <th width="20%"><strong>CONTACT PERSON</strong></th>
                                     <th width="20%"><strong>MOBILE NO.</strong></th>
                                     <th width="25%"><strong>EMAIL ADDRESS</strong></th>
-                                    <th width="10%">&nbsp;</th>
+                                    <th width="10%" data-priority="1">&nbsp;</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -59,14 +59,14 @@
                 </div>
                 <div id="collapse4" class="collapse" aria-labelledby="heading4" data-parent="#accordion1">
                     <div class="card-body">
-                        <table id="myTable2" class="display-1 table table-condensed table-hover table-striped">
+                        <table id="myTable2" class="display-1 table table-condensed table-hover table-striped responsive" width="100%">
                             <thead>
                                 <tr class="text-center">
                                     <th><strong>NAME</strong></th>
                                     <th width="20%"><strong>CONTACT PERSON</strong></th>
                                     <th width="20%"><strong>MOBILE NO.</strong></th>
                                     <th width="30%"><strong>EMAIL ADDRESS</strong></th>
-                                    <th width="10%">&nbsp;</th>
+                                    <th width="10%" data-priority="1">&nbsp;</th>
                                 </tr>
                             </thead>
                             <tbody>

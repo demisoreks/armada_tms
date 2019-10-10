@@ -1,4 +1,4 @@
-@extends('app', ['page_title' => 'My Tasks'])
+@extends('app', ['page_title' => 'My Tasks', 'open_menu' => 'task'])
 
 <?php
 if (!isset($_SESSION)) session_start();
@@ -7,7 +7,7 @@ $halo_user = $_SESSION['halo_user'];
 @section('content')
 <div class="row">
     <div class="col-12">
-        <table id="myTable1" class="display-1 table table-condensed table-hover table-striped">
+        <table id="myTable1" class="display-1 table table-condensed table-hover table-striped responsive" width="100%">
             <thead>
                 <tr class="text-center">
                     <th width="15%"><strong>PICKUP/SERVICE DATE/TIME</strong></th>
@@ -15,8 +15,8 @@ $halo_user = $_SESSION['halo_user'];
                     <th width="20%"><strong>PICKUP/SERVICE LOCATION</strong></th>
                     <th width="20%"><strong>STOPS</strong></th>
                     <th width="10%"><strong>STATUS</strong></th>
-                    <th width="10%">&nbsp;</th>
-                    <th width="10%">&nbsp;</th>
+                    <th width="10%" data-priority="1">&nbsp;</th>
+                    <th width="10%" data-priority="1">&nbsp;</th>
                 </tr>
             </thead>
             <tbody>
