@@ -272,8 +272,8 @@ use GuzzleHttp\Client;
 
                                     <tr>
                                         <td>{{ $request->service_date_time }}</td>
-                                        <td>{{ $request->client->name }}<br />{{ $request->client->mobile_no }}<br />{{ $request->client->email }}</td>
-                                        <td>{{ $request->principal_name }}<br />{{ $request->principal_mobile_no }}<br />{{ $request->principal_email }}</td>
+                                        <td>{{ $request->client->name }}<br />{{ $request->client->mobile_no }}</td>
+                                        <td>{{ $request->principal_name }}<br />{{ $request->principal_mobile_no }}</td>
                                         <td>{{ $request->service_location }}</td>
                                         <td>
                                             @foreach (App\AmdRequestStop::where('request_id', $request->id)->get() as $stop)
