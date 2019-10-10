@@ -316,7 +316,7 @@ use GuzzleHttp\Client;
                                     <h1>{{ App\AmdRequest::where('service_date_time', '<', date('Y-m-d'))->where('region_id', $region->id)->whereIn('status_id', function ($query) {
                                         $query->select('id')->from('amd_status')->whereRaw('description in ("Submitted", "Assigned", "Acknowledged", "Started")');
                                     })->count() }}</h1>
-                                    PENDING CLOSURE
+                                    TASKS PENDING CLOSURE
                                 </div>
                                 <div class="col-sm-6 text-center text-success">
                                     <h1>{{ App\AmdRequestStatus::where('status_id', App\AmdStatus::where('description', 'Completed')->first()->id)->where('created_at', 'like', date('Y-m-d').'%')->count() }}</h1>
