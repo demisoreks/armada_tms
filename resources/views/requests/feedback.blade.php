@@ -120,26 +120,7 @@ use GuzzleHttp\Client;
         <!-- Styles -->
         
     </head>
-    <?php
-    $more = "";
-    if (isset($nest)) {
-        for ($i=0; $i<$nest; $i++) {
-            $more .= "../";
-        }
-    }
     
-    if (!isset($_SESSION)) session_start();
-    $halo_user = $_SESSION['halo_user'];
-    
-    $client = new Client();
-    $res = $client->request('GET', DB::table('acc_config')->whereId(1)->first()->master_url.'/api/getRoles', [
-        'query' => [
-            'username' => $halo_user->username,
-            'link_id' => DB::table('amd_config')->whereId(1)->first()->link_id
-        ]
-    ]);
-    $permissions = json_decode($res->getBody());
-    ?>
     <body style="background-color: #fff;">
         <div class="row">
             <div class="col-lg-6 offset-lg-3">

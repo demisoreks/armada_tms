@@ -130,7 +130,7 @@ use GuzzleHttp\Client;
                         <td>
                             <table class="table table-hover table-bordered">
                                 <tr>
-                                    <th colspan="3"><h4 class="font-weight-bold">Commander(s)</h4></th>
+                                    <th colspan="3"><h4 class="font-weight-bold">Commander(s)</h4><span class="text-danger">NB: Commanders' details are subject to change.</span></th>
                                 </tr>
                                 @foreach (App\AmdResource::where('request_id', $request->id)->where('resource_type', 1)->get() as $commander)
                                 <tr>

@@ -6,9 +6,9 @@ use Illuminate\Http\Request;
 
 class AnalyticsController extends Controller
 {
-    public function feedback() {
+    public function ratings() {
         
         
-        return view('analytics.feedback');
+        return view('analytics.ratings');
     }
 }
