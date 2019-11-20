@@ -213,7 +213,7 @@ Route::bind('downtimes', function($value, $route) {
     return App\AmdDowntime::findBySlug($value)->first();
 });
 
-Route::get('analytics/ratings', [
+Route::match(['get', 'post'], 'analytics/ratings', [
     'as' => 'analytics.ratings', 'uses' => 'AnalyticsController@ratings'
 ]);
 

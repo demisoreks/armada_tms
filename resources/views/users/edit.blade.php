@@ -1,4 +1,4 @@
-@extends('app', ['page_title' => 'Users (Details Officers and Commanders)', 'open_menu' => 'admin'])
+@extends('app', ['page_title' => 'Users (Detail Officers and Commanders)', 'open_menu' => 'admin'])
 
 @section('content')
 <div class="row">
