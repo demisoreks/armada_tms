@@ -15,12 +15,12 @@
                 <strong>AVERAGE COMMANDER RATINGS</strong>
             </div>
             <div class="card-body bg-white">
-                <table id="myTable1" class="display-1 table table-condensed table-hover table-striped responsive" width="100%">
+                <table id="myTable4" class="display-1 table table-condensed table-hover table-striped responsive" width="100%">
                     <thead>
                         <tr class="text-center">
-                            <th><strong>COMMANDER</strong></th>
+                            <th data-priority="1"><strong>COMMANDER</strong></th>
                             <th width="40%"><strong>REGION</strong></th>
-                            <th width="20%"><strong>AVERAGE</strong></th>
+                            <th width="20%" data-priority="1"><strong>AVERAGE</strong></th>
                         </tr>
                     </thead>
                     <tbody>
