@@ -42,7 +42,8 @@
                 <strong>OVERALL RATINGS</strong>
             </div>
             <div class="card-body bg-white">
-                
+                {!! $ratings_chart->container() !!}
+                {!! $ratings_chart->script() !!}
             </div>
         </div>
     </div>
