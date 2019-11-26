@@ -216,6 +216,9 @@ Route::bind('downtimes', function($value, $route) {
 Route::match(['get', 'post'], 'analytics/ratings', [
     'as' => 'analytics.ratings', 'uses' => 'AnalyticsController@ratings'
 ]);
+Route::match(['get', 'post'], 'analytics/status', [
+    'as' => 'analytics.status', 'uses' => 'AnalyticsController@status'
+]);
 
 Route::get('client', [
     'as' => 'client.index', 'uses' => 'ClientController@index'

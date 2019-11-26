@@ -8,6 +8,7 @@ use Input;
 use App\AmdUser;
 use App\AmdResource;
 use App\AmdRequest;
+use App\AmdStatus;
 use App\Charts\DistributionChart;
 
 class AnalyticsController extends Controller
@@ -82,13 +83,51 @@ class AnalyticsController extends Controller
         }
         $ratings_labels = ['Excellent', 'Good', 'Satisfactory', 'Poor', 'Very Poor', 'No Feedback'];
         $ratings_counts = [$excellent, $good, $satisfactory, $poor, $very_poor, $no_feedback];
-        $ratings_colors = [];
-        for ($i=0; $i<6; $i++) {
+        $ratings_colors = ['#006600', '#33CC00', '#FF9900', '#FF0000', '#990000', '#666666'];
+        /*for ($i=0; $i<6; $i++) {
             array_push($ratings_colors, '#'.str_pad(dechex(mt_rand(0, 0xFFFFFF)), 6, '0', STR_PAD_LEFT));
-        }
+        }*/
         
         $ratings_chart->labels($ratings_labels)->dataset('Ratings Chart', 'doughnut', $ratings_counts)->backgroundColor($ratings_colors);
         
         return view('analytics.ratings', compact('param', 'ratings', 'ratings_chart'));
+    }
+    
+    public function status() {
+        $input = Input::all();
+        if (isset($input['from_date']) && isset($input['to_date'])) {
+            $from_date = $input['from_date'];
+            $to_date = $input['to_date'];
+        } else {
+            $to_date = date("Y-m-d");
+            $from_date = date("Y-m-d", strtotime('-7 days', strtotime($to_date)));
+        }
+        $param = [
+            'from_date' => $from_date,
+            'to_date' => $to_date
+        ];
+        
+        $status = [];
+        $status_counts = [];
+        $stats = ['Initiated', 'Submitted', 'Returned', 'Cancelled', 'Assigned', 'Acknowledged', 'Started', 'Completed'];
+        $i = 1;
+        foreach ($stats as $stat) {
+            $count = AmdRequest::where('service_date_time', '>=', $from_date.' 00:00:00')->where('service_date_time', '<=', $to_date.' 23:59:59')->where('status_id', AmdStatus::where('description', $stat)->first()->id)->count();
+            array_push($status, [
+                'sn' => $i,
+                'status' => $stat,
+                'count' => $count
+            ]);
+            array_push($status_counts, $count);
+            $i ++;
+        }
+        
+        $status_chart = new DistributionChart();
+        
+        $status_colors = ['#ff00ff', '#d9534f', '#666666', '#eeeeee', '#f0ad4e', '#5bc0de', '#5cb85c', '#330066'];
+        
+        $status_chart->labels($stats)->dataset('Status Chart', 'pie', $status_counts)->backgroundColor($status_colors);
+        
+        return view('analytics.status', compact('param', 'status', 'status_chart'));
     }
 }
