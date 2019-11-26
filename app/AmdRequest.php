@@ -40,4 +40,8 @@ class AmdRequest extends Model
     public function situationReports() {
         return $this->hasMany('App\AmdSituationReport');
     }
+    
+    public function region() {
+        return $this->belongsTo('App\AmdRegion');
+    }
 }

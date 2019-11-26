@@ -130,4 +130,27 @@ class AnalyticsController extends Controller
         
         return view('analytics.status', compact('param', 'status', 'status_chart'));
     }
+    
+    public function directory() {
+        $input = Input::all();
+        if (isset($input['from_date']) && isset($input['to_date'])) {
+            $from_date = $input['from_date'];
+            $to_date = $input['to_date'];
+        } else {
+            $to_date = date("Y-m-d");
+            $from_date = date("Y-m-d", strtotime('-7 days', strtotime($to_date)));
+        }
+        $param = [
+            'from_date' => $from_date,
+            'to_date' => $to_date
+        ];
+        
+        $requests = AmdRequest::where('service_date_time', '>=', $from_date.' 00:00:00')->where('service_date_time', '<=', $to_date.' 23:59:59')->get();
+        
+        return view('analytics.directory', compact('param', 'requests'));
+    }
+    
+    public function details(AmdRequest $request) {
+        return view('analytics.details', compact('request'));
+    }
 }

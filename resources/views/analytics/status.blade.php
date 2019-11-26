@@ -1,4 +1,4 @@
-@extends('app', ['page_title' => 'Task Status', 'open_menu' => 'analytics'])
+@extends('app', ['page_title' => 'Request Status', 'open_menu' => 'analytics'])
 
 @section('content')
 <div class="row" style="margin-bottom: 20px;">

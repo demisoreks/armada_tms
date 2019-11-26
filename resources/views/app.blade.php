@@ -294,8 +294,9 @@ use GuzzleHttp\Client;
                             <div id="collapse-menu6" class="collapse @if (isset($open_menu) && $open_menu == 'analytics') show @endif" aria-labelledby="heading-menu6" data-parent="#accordion-menu">
                                 <div class="card-body">
                                     <nav class="nav flex-column">
-                                        <a class="nav-link" href="{{ route('analytics.status') }}">Request Status</a>
                                         <a class="nav-link" href="{{ route('analytics.ratings') }}">Ratings</a>
+                                        <a class="nav-link" href="{{ route('analytics.status') }}">Request Status</a>
+                                        <a class="nav-link" href="{{ route('analytics.directory') }}">Request Directory</a>
                                     </nav>
                                 </div>
                             </div> 

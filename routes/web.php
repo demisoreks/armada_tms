@@ -219,6 +219,12 @@ Route::match(['get', 'post'], 'analytics/ratings', [
 Route::match(['get', 'post'], 'analytics/status', [
     'as' => 'analytics.status', 'uses' => 'AnalyticsController@status'
 ]);
+Route::match(['get', 'post'], 'analytics/directory', [
+    'as' => 'analytics.directory', 'uses' => 'AnalyticsController@directory'
+]);
+Route::get('analytics/{request}/details', [
+    'as' => 'analytics.details', 'uses' => 'AnalyticsController@details'
+]);
 
 Route::get('client', [
     'as' => 'client.index', 'uses' => 'ClientController@index'
