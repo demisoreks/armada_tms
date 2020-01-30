@@ -295,6 +295,7 @@ use GuzzleHttp\Client;
                                 <div class="card-body">
                                     <nav class="nav flex-column">
                                         <a class="nav-link" href="{{ route('analytics.ratings') }}">Ratings</a>
+                                        <a class="nav-link" href="{{ route('analytics.feedbacks') }}">Feedbacks</a>
                                         <a class="nav-link" href="{{ route('analytics.status') }}">Request Status</a>
                                         <a class="nav-link" href="{{ route('analytics.directory') }}">Request Directory</a>
                                     </nav>

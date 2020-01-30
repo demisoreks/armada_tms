@@ -9,6 +9,7 @@ use App\AmdUser;
 use App\AmdResource;
 use App\AmdRequest;
 use App\AmdStatus;
+use App\AccEmployee;
 use App\Charts\DistributionChart;
 
 class AnalyticsController extends Controller
@@ -53,7 +54,9 @@ class AnalyticsController extends Controller
             array_push($ratings, [
                 'commander' => $name,
                 'region' => $region,
-                'average' => $average
+                'average' => $average,
+                'task_count' => $count,
+                'last_login' => AccEmployee::whereId($commander->employee_id)->first()->last_login
             ]);
         }
         
@@ -93,7 +96,7 @@ class AnalyticsController extends Controller
         return view('analytics.ratings', compact('param', 'ratings', 'ratings_chart'));
     }
     
-    public function status() {
+    public function feedbacks() {
         $input = Input::all();
         if (isset($input['from_date']) && isset($input['to_date'])) {
             $from_date = $input['from_date'];
@@ -107,12 +110,34 @@ class AnalyticsController extends Controller
             'to_date' => $to_date
         ];
         
+        $requests = AmdRequest::where('service_date_time', '>=', $from_date.' 00:00:00')->where('service_date_time', '<=', $to_date.' 23:59:59')->whereNotNull('rating')->get();
+        
+        return view('analytics.feedbacks', compact('param', 'requests'));
+    }
+    
+    public function status() {
+        $input = Input::all();
+        if (isset($input['from_date']) && isset($input['to_date'])) {
+            $from_date = $input['from_date'];
+            $to_date = $input['to_date'];
+            $search_by = $input['search_by'];
+        } else {
+            $to_date = date("Y-m-d");
+            $from_date = date("Y-m-d", strtotime('-7 days', strtotime($to_date)));
+            $search_by = "service_date_time";
+        }
+        $param = [
+            'from_date' => $from_date,
+            'to_date' => $to_date,
+            'search_by' => $search_by
+        ];
+        
         $status = [];
         $status_counts = [];
         $stats = ['Initiated', 'Submitted', 'Returned', 'Cancelled', 'Assigned', 'Acknowledged', 'Started', 'Completed'];
         $i = 1;
         foreach ($stats as $stat) {
-            $count = AmdRequest::where('service_date_time', '>=', $from_date.' 00:00:00')->where('service_date_time', '<=', $to_date.' 23:59:59')->where('status_id', AmdStatus::where('description', $stat)->first()->id)->count();
+            $count = AmdRequest::where($search_by, '>=', $from_date.' 00:00:00')->where($search_by, '<=', $to_date.' 23:59:59')->where('status_id', AmdStatus::where('description', $stat)->first()->id)->count();
             array_push($status, [
                 'sn' => $i,
                 'status' => $stat,

@@ -4,6 +4,12 @@
 <div class="row" style="margin-bottom: 20px;">
     <div class="col-12">
         {!! Form::model($param, ['route' => ['analytics.status'], 'class' => 'form-inline']) !!}
+            <div class="col-auto">
+                {!! Form::label('search_by', 'Search By', []) !!}
+            </div>
+            <div class="col-auto">
+                {!! Form::select('search_by', ['service_date_time' => 'Service Date', 'created_at' => 'Creation Date'], $value = null, ['class' => 'form-control', 'required' => true]) !!}
+            </div>
             @include('analytics/date_form', ['submit_text' => 'Search'])
         {!! Form::close() !!}
     </div>

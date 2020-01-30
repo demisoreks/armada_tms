@@ -19,8 +19,10 @@
                     <thead>
                         <tr class="text-center">
                             <th data-priority="1"><strong>COMMANDER</strong></th>
-                            <th width="40%"><strong>REGION</strong></th>
-                            <th width="20%" data-priority="1"><strong>AVERAGE</strong></th>
+                            <th width="25%"><strong>REGION</strong></th>
+                            <th width="8%" data-priority="1"><strong>AVG.</strong></th>
+                            <th width="7%" data-priority="1"><strong>TASK COUNT</strong></th>
+                            <th width="22%"><strong>LAST LOGIN</strong></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -29,6 +31,8 @@
                             <td>{{ $rating['commander'] }}</td>
                             <td>{{ $rating['region'] }}</td>
                             <td align="right">{{ $rating['average'] }}</td>
+                            <td align="right">{{ $rating['task_count'] }}</td>
+                            <td align="center">{{ $rating['last_login'] }}</td>
                         </tr>
                         @endforeach
                     </tbody>

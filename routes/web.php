@@ -216,6 +216,9 @@ Route::bind('downtimes', function($value, $route) {
 Route::match(['get', 'post'], 'analytics/ratings', [
     'as' => 'analytics.ratings', 'uses' => 'AnalyticsController@ratings'
 ])->middleware(['auth.user', 'auth.access:'.$link_id.',Supervisor']);
+Route::match(['get', 'post'], 'analytics/feedbacks', [
+    'as' => 'analytics.feedbacks', 'uses' => 'AnalyticsController@feedbacks'
+])->middleware(['auth.user', 'auth.access:'.$link_id.',Supervisor']);
 Route::match(['get', 'post'], 'analytics/status', [
     'as' => 'analytics.status', 'uses' => 'AnalyticsController@status'
 ])->middleware(['auth.user', 'auth.access:'.$link_id.',Supervisor']);
