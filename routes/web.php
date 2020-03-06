@@ -152,7 +152,7 @@ Route::post('requests/{request}/add_sitrep', [
 Route::get('requests/{request}/start', [
     'as' => 'requests.start', 'uses' => 'RequestsController@start'
 ])->middleware(['auth.user', 'auth.access:'.$link_id.',Commander']);
-Route::post('requests/{request}/complete', [
+Route::get('requests/{request}/complete', [
     'as' => 'requests.complete', 'uses' => 'RequestsController@complete'
 ])->middleware(['auth.user', 'auth.access:'.$link_id.',Commander']);
 Route::get('requests/{request}/jmp', [

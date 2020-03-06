@@ -363,7 +363,7 @@ class RequestsController extends Controller
         if (!isset($_SESSION)) session_start();
         $halo_user = $_SESSION['halo_user'];
         
-        $input = Input::all();
+        /*$input = Input::all();
         if ($input['interested'] == "Yes") {
             $request->update([
                 'rating' => $input['rating'],
@@ -400,7 +400,7 @@ class RequestsController extends Controller
                     $m->to($principal_email)->subject('Task Completed');
                 });
             }
-        } else {
+        } else {*/
             $feedback_link = config('app.url')."/requests/".$request->slug()."/feedback";
             
             if ($request->client->email != null && $request->client->email != "") {
@@ -417,7 +417,7 @@ class RequestsController extends Controller
                 });
             }
 
-            if ($request->principal_email != null && $request->principal_email != "") {
+            /*if ($request->principal_email != null && $request->principal_email != "") {
                 $completed_email_data_p = [
                     'name' => $request->principal_name,
                     'feedback_link' => $feedback_link
@@ -430,7 +430,7 @@ class RequestsController extends Controller
                     $m->to($principal_email)->subject('Task Completed | Feedback Required');
                 });
             }
-        }
+        }*/
         
         $status = AmdStatus::where('description', 'Completed')->first();
         

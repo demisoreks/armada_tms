@@ -11,7 +11,7 @@ $halo_user = $_SESSION['halo_user'];
         @if ($request->status->description == "Assigned" || $request->status->description == "Acknowledged")
         <a class="btn btn-success" href="{{ route('requests.start', $request->slug()) }}" onclick="return confirmStart()"><i class="fas fa-check"></i> Start Task</a>
         @elseif ($request->status->description == "Started")
-        <a class="btn btn-success" data-toggle="modal" data-target="#modal2" title="Complete Task"><i class="fas fa-check"></i> Complete Task</a>
+        <a class="btn btn-success" href="{{ route('requests.complete', $request->slug()) }}" onclick="return confirmComplete()" title="Complete Task"><i class="fas fa-check"></i> Complete Task</a>
         <a class="btn btn-info" data-toggle="modal" data-target="#modal1" title="Situation Report"><i class="fas fa-info"></i> Sitrep</a>
         @endif
         <a class="btn btn-secondary" href="{{ route('requests.jmp', $request->slug()) }}" target="_blank"><i class="fas fa-map"></i> JMP</a>
