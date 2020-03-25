@@ -11,7 +11,7 @@
 |
 */
 
-$link_id = DB::table('amd_config')->whereId(1)->first()->link_id;
+$link_id = 0;
 
 Route::get('/', [
     'as' => 'welcome', 'uses' => 'WelcomeController@index'
