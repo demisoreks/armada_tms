@@ -109,19 +109,21 @@ class ErsClientsController extends Controller
             $client_name = $ers_client->title.' '.$client_name;
         }
         
-        $completed_email_data = [
-            'name' => $client_name,
-            'access_code' => $input['access_code']
-        ];
+        if ($input['status'] == 'Active') {
+            $completed_email_data = [
+                'name' => $client_name,
+                'access_code' => $input['access_code']
+            ];
 
-        $client_email = $ers_client->email;
+            $client_email = $ers_client->email;
 
-        Mail::send('emails.ers_access_code', $completed_email_data, function ($m) use ($client_email) {
-            $m->from('hens@halogensecurity.com', 'HalogenGroup');
-            $m->to($client_email)->subject('Access Code | Emergency Response Service');
-        });
-        
-        return Redirect::route('ers_clients.view', [$ers_client->slug()])
-                ->with('success', '<span class="font-weight-bold">Completed!</span><br />You have successfully treated the pending request.');
+            Mail::send('emails.ers_access_code', $completed_email_data, function ($m) use ($client_email) {
+                $m->from('hens@halogensecurity.com', 'HalogenGroup');
+                $m->to($client_email)->subject('Access Code | Emergency Response Service');
+            });
+
+            return Redirect::route('ers_clients.view', [$ers_client->slug()])
+                    ->with('success', '<span class="font-weight-bold">Completed!</span><br />You have successfully treated the pending request.');
+        }
     }
 }
