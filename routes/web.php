@@ -238,3 +238,25 @@ Route::get('client/cart', [
 Route::post('client/update_request', [
     'as' => 'client.update_request', 'uses' => 'ClientController@update_request'
 ]);
+
+Route::post('ers_clients/{ers_client}/treat', [
+    'as' => 'ers_clients.treat', 'uses' => 'ErsClientsController@treat'
+])->middleware(['auth.user', 'auth.access:'.$link_id.',ControlRoom']);
+Route::post('ers/submit', [
+    'as' => 'ers.submit', 'uses' => 'ErsClientsController@submit'
+]);
+Route::get('ers/enrol', [
+    'as' => 'ers.enrol', 'uses' => 'ErsClientsController@enrol'
+]);
+Route::get('ers_clients/pending', [
+    'as' => 'ers_clients.pending', 'uses' => 'ErsClientsController@pending'
+])->middleware(['auth.user', 'auth.access:'.$link_id.',ControlRoom']);
+Route::get('ers_clients/active', [
+    'as' => 'ers_clients.active', 'uses' => 'ErsClientsController@active'
+])->middleware(['auth.user', 'auth.access:'.$link_id.',ControlRoom,Supervisor,Admin']);
+Route::get('ers_clients/{ers_client}/view', [
+    'as' => 'ers_clients.view', 'uses' => 'ErsClientsController@view'
+])->middleware(['auth.user', 'auth.access:'.$link_id.',ControlRoom,Supervisor,Admin']);
+Route::bind('ers_clients', function($value, $route) {
+    return App\AmdErsClient::findBySlug($value)->first();
+});

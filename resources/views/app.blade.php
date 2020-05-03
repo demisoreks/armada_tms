@@ -389,6 +389,27 @@ use GuzzleHttp\Client;
                             </div> 
                         </div>
                         @endif
+                        @if (count(array_intersect($permissions, ['ControlRoom', 'Supervisor', 'Admin'])) != 0)
+                        <div class="card">
+                            <div class="card-header bg-white" id="heading-menu7" style="padding: 0;">
+                                <h5 class="mb-0">
+                                    <button class="btn btn-link" data-toggle="collapse" data-target="#collapse-menu7" aria-expanded="true" aria-controls="collapse-menu7">
+                                        <strong>ERS Menu</strong>
+                                    </button>
+                                </h5>
+                            </div>
+                            <div id="collapse-menu7" class="collapse @if (isset($open_menu) && $open_menu == 'ers') show @endif" aria-labelledby="heading-menu7" data-parent="#accordion-menu">
+                                <div class="card-body">
+                                    <nav class="nav flex-column">
+                                        @if (count(array_intersect($permissions, ['ControlRoom'])) != 0)
+                                        <a class="nav-link" href="{{ route('ers_clients.pending') }}">Pending Clients</a>
+                                        @endif
+                                        <a class="nav-link" href="{{ route('ers_clients.active') }}">Active Clients</a>
+                                    </nav>
+                                </div>
+                            </div> 
+                        </div>
+                        @endif
                     </div>
                 </div>
                 <div class="col-md-10">

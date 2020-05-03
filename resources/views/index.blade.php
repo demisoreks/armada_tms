@@ -173,6 +173,33 @@ $permissions = json_decode($res->getBody());
         </a>
     </div>
     @endif
+    @if (count(array_intersect($permissions, ['ControlRoom', 'Supervisor', 'Admin'])) != 0)
+    <div class="col-12">
+        <h4 class="page-header text-primary" style="border-bottom: 1px solid #999; padding-bottom: 20px; margin-bottom: 20px;">ERS Menu</h4>
+    </div>
+    @if (count(array_intersect($permissions, ['ControlRoom'])) != 0)
+    <div class="col-md-3" style="margin-bottom: 20px;">
+        <a href="{{ route('ers_clients.pending') }}">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h1 class="text-warning"><i class="fas fa-users"></i></h1>
+                    <h5 class="text-primary">Pending Clients</h5>
+                </div>
+            </div>
+        </a>
+    </div>
+    @endif
+    <div class="col-md-3" style="margin-bottom: 20px;">
+        <a href="{{ route('ers_clients.active') }}">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h1 class="text-info"><i class="fas fa-users"></i></h1>
+                    <h5 class="text-primary">Active Clients</h5>
+                </div>
+            </div>
+        </a>
+    </div>
+    @endif
 </div>
 
 <script type="text/javascript">
