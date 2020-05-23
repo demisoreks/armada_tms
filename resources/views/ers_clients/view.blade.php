@@ -39,6 +39,14 @@ $permissions = json_decode($res->getBody());
             <tr>
                 <td>
                     <div class="row">
+                        <div class="col"><small>Date of Birth</small><br /><strong>{{ Carbon\Carbon::parse($ers_client->date_of_birth)->format('F j, Y') }}</strong></div>
+                        <div class="col"><small>Gender</small><br /><strong>{{ $ers_client->gender }}</strong></div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="row">
                         <div class="col"><small>Home Address</small><br /><strong>{!! nl2br($ers_client->home_address) !!}</strong></div>
                     </div>
                 </td>
@@ -55,6 +63,7 @@ $permissions = json_decode($res->getBody());
                 <td>
                     <div class="row">
                         <div class="col"><small>Email Address</small><br /><strong>{{ $ers_client->email }}</strong></div>
+                        <div class="col"><small>Occupation</small><br /><strong>{{ $ers_client->occupation }}</strong></div>
                     </div>
                 </td>
             </tr>
@@ -71,7 +80,7 @@ $permissions = json_decode($res->getBody());
     <div class="col-md-6">
         @if ($ers_client->status == 'Pending')
         @if (count(array_intersect($permissions, ['ControlRoom'])) != 0)
-        
+
         {!! Form::model(null, ['route' => ['ers_clients.treat', $ers_client->slug()], 'class' => 'form-group']) !!}
         <div class="form-group row">
             {!! Form::label('status', 'Action *', ['class' => 'col-md-4 col-form-label']) !!}
@@ -91,10 +100,10 @@ $permissions = json_decode($res->getBody());
             </div>
         </div>
         {!! Form::close() !!}
-        
+
         @endif
         @else
-        
+
         <table class="display-1 table table-condensed table-hover table-striped" width="100%">
             <tr>
                 <th><strong>ACTIVATION</strong></th>
@@ -116,7 +125,7 @@ $permissions = json_decode($res->getBody());
             </tr>
         </table>
         <h2 class="text-center">{{ $ers_client->access_code }}</h2>
-        
+
         @endif
     </div>
 </div>

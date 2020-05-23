@@ -21,7 +21,7 @@
                 <tr>
                     <td>{{ $client->created_at }}</td>
                     <td>{{ $client->title }} {{ $client->first_name }} {{ $client->surname }}</td>
-                    <td>{{ nl2br($client->home_address) }}</td>
+                    <td>{!! nl2br($client->home_address) !!}</td>
                     <td>{{ $client->primary_phone }}</td>
                     <td>{{ $client->alternate_phone }}</td>
                     <td>{{ $client->email }}</td>

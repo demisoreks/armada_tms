@@ -9,7 +9,7 @@
                 <div class="alert alert-info">
                     <p>Dear {{ $client->title }} {{ $client->first_name }} {{ $client->surname }},</p>
                     <p>Thank you for enroling for this service. An email containing your unique access code will be sent to {{ $client->email }}.</p>
-                    <p><a href="https://halogen-group.com/" target="_blank">HalogenGroup</a></p>
+                    <p><a href="https://halogen-group.com/" target="_blank">Halogen Group</a></p>
                 </div>
                 <a href="{{ route('ers.enrol') }}" class="btn btn-block btn-secondary btn-lg">Click here for a new enrolment</a>
             </div>

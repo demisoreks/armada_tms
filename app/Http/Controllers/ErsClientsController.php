@@ -17,7 +17,7 @@ class ErsClientsController extends Controller
     public function enrol() {
         return view('general.enrol');
     }
-    
+
     public function submit() {
         $input = Input::all();
         $error = "";
@@ -48,6 +48,7 @@ class ErsClientsController extends Controller
         } else {
             unset($input['identity']);
             unset($input['utility']);
+            unset($input['terms']);
             $input['title'] = strtoupper($input['title1']);
             unset($input['title1']);
             $input['first_name'] = strtoupper($input['first_name']);
@@ -65,27 +66,27 @@ class ErsClientsController extends Controller
             }
         }
     }
-    
+
     public function pending() {
         $clients = AmdErsClient::where('status', 'Pending')->get();
         return view('ers_clients.pending', compact('clients'));
     }
-    
+
     public function active() {
         $clients = AmdErsClient::where('status', 'Active')->get();
         return view('ers_clients.active', compact('clients'));
     }
-    
+
     public function view(AmdErsClient $ers_client) {
         return view('ers_clients.view', compact('ers_client'));
     }
-    
+
     public function generateAccessCode() {
         $alphabets = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         $numbers = "01234567890123456789";
-        
+
         $access_code = substr(str_shuffle($alphabets), 0, 2).substr(str_shuffle($numbers), 0, 4);
-        
+
         if (AmdErsClient::where('access_code', $access_code)->count() > 0) {
             return generateAccessCode();
         } else {
@@ -101,14 +102,14 @@ class ErsClientsController extends Controller
         $input['treated_at'] = Carbon::now();
         $input['treated_by'] = $halo_user->id;
         $input['access_code'] = $this->generateAccessCode();
-        
+
         $ers_client->update($input);
-        
+
         $client_name = $ers_client->first_name.' '.$ers_client->surname;
         if ($ers_client->title) {
             $client_name = $ers_client->title.' '.$client_name;
         }
-        
+
         if ($input['status'] == 'Active') {
             $completed_email_data = [
                 'name' => $client_name,
@@ -118,7 +119,7 @@ class ErsClientsController extends Controller
             $client_email = $ers_client->email;
 
             Mail::send('emails.ers_access_code', $completed_email_data, function ($m) use ($client_email) {
-                $m->from('hens@halogensecurity.com', 'HalogenGroup');
+                $m->from('hens@halogensecurity.com', 'Halogen Group');
                 $m->to($client_email)->subject('Access Code | Emergency Response Service');
             });
 
