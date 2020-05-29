@@ -78,7 +78,18 @@ class ErsClientsController extends Controller
     }
 
     public function view(AmdErsClient $ers_client) {
-        return view('ers_clients.view', compact('ers_client'));
+        $identity_link = $this->getDocuementLink($ers_client, 'identity', ['pdf', 'jpg']);
+        $utility_link = $this->getDocuementLink($ers_client, 'utility', ['pdf', 'jpg']);
+        return view('ers_clients.view', compact('ers_client', 'identity_link', 'utility_link'));
+    }
+
+    public function getDocuementLink(AmdErsClient $ers_client, $document, $types) {
+        foreach ($types as $type) {
+            if (Storage::exists('public/ers/'.$document.'/'.$ers_client->id.'.'.$type)) {
+                return config('app.url').Storage::url('public/ers/'.$document.'/'.$ers_client->id.'.'.$type);
+            }
+        }
+        return null;
     }
 
     public function generateAccessCode() {

@@ -78,6 +78,20 @@ $permissions = json_decode($res->getBody());
         </table>
     </div>
     <div class="col-md-6">
+        <table class="display-1 table table-condensed table-hover table-striped" width="100%">
+            <tr>
+                <th><strong>DOCUMENTATION</strong></th>
+            </tr>
+            <tr>
+                <td>
+                    <div class="row">
+                        @if ($identity_link) <div class="col"><small>Identity Document</small><br /><strong><a href="{{ $identity_link }}" target="_blank">Click to view</a></strong></div> @endif
+                        @if ($utility_link) <div class="col"><small>Utility Document</small><br /><strong><a href="{{ $utility_link }}" target="_blank">Click to view</a></strong></div> @endif
+                    </div>
+                </td>
+            </tr>
+        </table>
+
         @if ($ers_client->status == 'Pending')
         @if (count(array_intersect($permissions, ['ControlRoom'])) != 0)
 

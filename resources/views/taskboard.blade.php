@@ -10,7 +10,7 @@ use GuzzleHttp\Client;
         <meta http-equiv="refresh" content="120">
 
         <title>Taskboard | {{ config('app.name') }}</title>
-        
+
         <style type="text/css">
         #map {
           height: 100%;
@@ -91,7 +91,7 @@ use GuzzleHttp\Client;
         #target {
           width: 345px;
         }
-        
+
         .pac-container {
             background-color: #FFF;
             z-index: 100000;
@@ -106,18 +106,18 @@ use GuzzleHttp\Client;
             z-index: 1000;
         }​
         </style>
-        
+
         {!! Html::style('css/app.css') !!}
         {!! Html::style('css/mdb.min.css') !!}
         {!! Html::style('css/datatables.min.css') !!}
         {!! Html::style('fontawesome/css/all.css') !!}
-        
+
         {!! Html::script('js/jquery-3.3.1.min.js') !!}
         {!! Html::script('js/popper.min.js') !!}
         {!! Html::script('js/app.js') !!}
         {!! Html::script('js/mdb.min.js') !!}
         {!! Html::script('js/datatables.min.js') !!}
-        
+
         <script type="text/javascript">
             $(document).ready(function () {
                 $('#myTable1').DataTable({
@@ -131,7 +131,7 @@ use GuzzleHttp\Client;
                     "order": [[ 0, "desc" ]]
                 });
             });
-            
+
             function confirmDisable() {
                 if (confirm("Are you sure you want to disable this item?")) {
                     return true;
@@ -139,7 +139,7 @@ use GuzzleHttp\Client;
                     return false;
                 }
             }
-            
+
             function confirmDelete() {
                 if (confirm("Are you sure you want to completely delete this item?")) {
                     return true;
@@ -147,7 +147,7 @@ use GuzzleHttp\Client;
                     return false;
                 }
             }
-            
+
             function confirmSubmit() {
                 if (confirm("Are you sure you want to submit this request?")) {
                     return true;
@@ -155,7 +155,7 @@ use GuzzleHttp\Client;
                     return false;
                 }
             }
-            
+
             function confirmCancel() {
                 if (confirm("Are you sure you want to cancel this request?")) {
                     return true;
@@ -163,7 +163,7 @@ use GuzzleHttp\Client;
                     return false;
                 }
             }
-            
+
             function confirmTreat() {
                 if (confirm("Request will be immediately mapped to your region.\nAre you sure you want to treat this request?")) {
                     return true;
@@ -171,7 +171,7 @@ use GuzzleHttp\Client;
                     return false;
                 }
             }
-            
+
             function confirmMarkAsAssigned() {
                 if (confirm("Marking this request as assigned will notify the client and assigned commander(s).\nYou may want to review your resource assignments before moving ahead.\nAre you sure you want to continue?")) {
                     return true;
@@ -179,7 +179,7 @@ use GuzzleHttp\Client;
                     return false;
                 }
             }
-            
+
             function confirmStart() {
                 if (confirm("Are you sure you want to start this task?")) {
                     return true;
@@ -187,7 +187,7 @@ use GuzzleHttp\Client;
                     return false;
                 }
             }
-            
+
             function confirmComplete() {
                 if (confirm("Are you sure you want to complete this task?")) {
                     return true;
@@ -198,7 +198,7 @@ use GuzzleHttp\Client;
         </script>
 
         <!-- Styles -->
-        
+
     </head>
     <?php
     $more = "";
@@ -207,10 +207,10 @@ use GuzzleHttp\Client;
             $more .= "../";
         }
     }
-    
+
     if (!isset($_SESSION)) session_start();
     $halo_user = $_SESSION['halo_user'];
-    
+
     $client = new Client();
     $res = $client->request('GET', DB::table('acc_config')->whereId(1)->first()->master_url.'/api/getRoles', [
         'query' => [
@@ -237,7 +237,7 @@ use GuzzleHttp\Client;
             </div>
             <div class="row bg-secondary">
                 <div class="col-12" style="height: 10px;">
-                    
+
                 </div>
             </div>
             <div class="row">
@@ -256,13 +256,14 @@ use GuzzleHttp\Client;
                             <table id="myTable1" class="display-1 table table-condensed table-hover table-striped responsive" width="100%">
                                 <thead>
                                     <tr class="text-center">
-                                        <th width="10%"><strong>PICKUP/SERVICE DATE/TIME</strong></th>
+                                        <th width="8%"><strong>PICKUP/SERVICE DATE/TIME</strong></th>
                                         <th><strong>CLIENT INFORMATION</strong></th>
                                         <th width="15%"><strong>PRINCIPAL'S DETAILS</strong></th>
                                         <th width="15%"><strong>PICKUP/SERVICE LOCATION</strong></th>
-                                        <th width="15%"><strong>STOPS</strong></th>
-                                        <th width="15%" data-priority="1"><strong>COMMANDER(S)</strong></th>
-                                        <th width="15%" data-priority="1"><strong>STATUS</strong></th>
+                                        <th width="14%"><strong>STOPS</strong></th>
+                                        <th width="14%" data-priority="1"><strong>COMMANDER(S)</strong></th>
+                                        <th width="14%" data-priority="1"><strong>STATUS</strong></th>
+                                        <th width="4%" data-priority="1"><strong>JMP</strong></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -287,6 +288,9 @@ use GuzzleHttp\Client;
                                         </td>
                                         <td align="center">
                                             <h5><span class="badge @if ($request->status->description == 'Submitted') badge-danger @elseif ($request->status->description == 'Assigned') badge-warning @elseif ($request->status->description == 'Started') badge-success @elseif ($request->status->description == 'Acknowledged') badge-info @endif badge-pill">{{ $request->status->description }}</span></h5>
+                                        </td>
+                                        <td>
+                                            <a class="btn btn-warning btn-block btn-sm" href="{{ route('requests.jmp', [$request->slug()]) }}" target="_blank">JMP</a>
                                         </td>
                                     </tr>
 
@@ -334,7 +338,7 @@ use GuzzleHttp\Client;
                 </div>
             </div>
         </div>
-        
+
         <div class="modal fade" id="modal1" tabindex="-1" role="dialog" aria-labelledby="modal1Title" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                 <div class="modal-content">
@@ -357,6 +361,6 @@ use GuzzleHttp\Client;
                 </div>
             </div>
         </div>
-        
+
     </body>
 </html>
