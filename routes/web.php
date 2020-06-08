@@ -15,7 +15,7 @@ $link_id = DB::table('amd_config')->whereId(1)->first()->link_id;
 
 Route::get('/', [
     'as' => 'welcome', 'uses' => 'WelcomeController@index'
-])->middleware(['auth.user', 'auth.access:'.$link_id.',Admin,Detailer,Commander,Supervisor']);
+])->middleware(['auth.user', 'auth.access:'.$link_id.',Admin,Detailer,Commander,Supervisor,ControlRoom']);
 Route::get('thank_you', [
     'as' => 'thank_you', 'uses' => 'WelcomeController@thank_you'
 ]);

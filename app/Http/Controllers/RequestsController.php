@@ -20,6 +20,7 @@ use App\AmdSituationReport;
 use App\AmdState;
 use App\AmdRegion;
 use App\AmdStatus;
+use App\AccEmployee;
 
 class RequestsController extends Controller
 {
@@ -27,17 +28,17 @@ class RequestsController extends Controller
         $requests = AmdRequest::where('status_id', 1)->get();
         return view('requests.index', compact('requests'));
     }
-    
+
     public function create() {
         return view('requests.create');
     }
-    
+
     public function initiate(AmdClient $client) {
         if (!isset($_SESSION)) session_start();
         $halo_user = $_SESSION['halo_user'];
-        
+
         $status = AmdStatus::where('description', 'Initiated')->first();
-        
+
         $request = AmdRequest::create([
             'client_id' => $client->id,
             'status_id' => $status->id
@@ -47,20 +48,20 @@ class RequestsController extends Controller
             'status_id' => $status->id,
             'updated_by' => $halo_user->id
         ]);
-        
+
         AmdActivity::create([
             'employee_id' => $halo_user->id,
             'detail' => 'A request was initiated for '.$request->client->name.'.',
             'source_ip' => $_SERVER['REMOTE_ADDR']
         ]);
-        
+
         return Redirect::route('requests.show', $request->slug());
     }
-    
+
     public function show(AmdRequest $request) {
         return view('requests.show', compact('request'));
     }
-    
+
     public function update(AmdRequest $request) {
         $input = array_except(Input::all(), '_method');
         $input['service_date_time'] = $input['service_date'].' '.$input['service_time'];
@@ -72,7 +73,7 @@ class RequestsController extends Controller
         return Redirect::route('requests.show', $request->slug())
                 ->with('success', '<span class="font-weight-bold">Done!</span><br />Request details have been updated.');
     }
-    
+
     public function add_service(AmdRequest $request) {
         $input = Input::all();
         unset($input['service_id']);
@@ -86,14 +87,14 @@ class RequestsController extends Controller
                     ->with('success', '<span class="font-weight-bold">Done!</span><br />Service option has been added.');
         }
     }
-    
+
     public function remove_service(AmdRequestOption $request_option) {
         $request = AmdRequest::whereId($request_option->request_id)->first();
         $request_option->delete();
         return Redirect::route('requests.show', $request->slug())
                 ->with('success', '<span class="font-weight-bold">Done!</span><br />Service option has been removed.');
     }
-    
+
     public function add_stop(AmdRequest $request) {
         $input = Input::all();
         $input['request_id'] = $request->id;
@@ -106,20 +107,20 @@ class RequestsController extends Controller
                     ->with('success', '<span class="font-weight-bold">Done!</span><br />Stop has been added.');
         }
     }
-    
+
     public function remove_stop(AmdRequestStop $request_stop) {
         $request = AmdRequest::whereId($request_stop->request_id)->first();
         $request_stop->delete();
         return Redirect::route('requests.show', $request->slug())
                 ->with('success', '<span class="font-weight-bold">Done!</span><br />Stop has been removed.');
     }
-    
+
     public function submit(AmdRequest $request) {
         if (!isset($_SESSION)) session_start();
         $halo_user = $_SESSION['halo_user'];
-        
+
         $status = AmdStatus::where('description', 'Submitted')->first();
-        
+
         $request->update([
             'status_id' => $status->id
         ]);
@@ -128,23 +129,23 @@ class RequestsController extends Controller
             'status_id' => $status->id,
             'updated_by' => $halo_user->id
         ]);
-        
+
         AmdActivity::create([
             'employee_id' => $halo_user->id,
             'detail' => 'A request was submitted for '.$request->client->name.'.',
             'source_ip' => $_SERVER['REMOTE_ADDR']
         ]);
-        
+
         return Redirect::route('requests.index')
                 ->with('success', '<span class="font-weight-bold">Completed!</span><br />Request has been submitted.');
     }
-    
+
     public function cancel(AmdRequest $request) {
         if (!isset($_SESSION)) session_start();
         $halo_user = $_SESSION['halo_user'];
-        
+
         $status = AmdStatus::where('description', 'Cancelled')->first();
-        
+
         $request->update([
             'status_id' => $status->id
         ]);
@@ -153,17 +154,17 @@ class RequestsController extends Controller
             'status_id' => $status->id,
             'updated_by' => $halo_user->id
         ]);
-        
+
         AmdActivity::create([
             'employee_id' => $halo_user->id,
             'detail' => 'A request was cancelled for '.$request->client->name.'.',
             'source_ip' => $_SERVER['REMOTE_ADDR']
         ]);
-        
+
         return Redirect::route('requests.index')
                 ->with('success', '<span class="font-weight-bold">Completed!</span><br />Request has been cancelled.');
     }
-    
+
     public function submitted() {
         $status = AmdStatus::where('description', 'Submitted')->first();
         $requests = AmdRequest::where('status_id', $status->id)->get();
@@ -172,7 +173,7 @@ class RequestsController extends Controller
         })->get();
         return view('requests.submitted', compact('requests', 'other_requests'));
     }
-    
+
     public function treat(AmdRequest $request) {
         if ($request->region_id == null) {
             if (!isset($_SESSION)) session_start();
@@ -181,7 +182,7 @@ class RequestsController extends Controller
         }
         return view('requests.treat', compact('request'));
     }
-    
+
     public function add_resource(AmdRequest $request) {
         $input = Input::all();
         $input['request_id'] = $request->id;
@@ -206,38 +207,38 @@ class RequestsController extends Controller
                     ->with('success', '<span class="font-weight-bold">Done!</span><br />Resource has been added.');
         }
     }
-    
+
     public function remove_resource(AmdResource $resource) {
         $request = AmdRequest::whereId($resource->request_id)->first();
         $resource->delete();
         return Redirect::route('requests.treat', $request->slug())
                 ->with('success', '<span class="font-weight-bold">Done!</span><br />Resource has been removed.');
     }
-    
+
     public function transfer(AmdRequest $request) {
         $input = Input::all();
-        
+
         if (!isset($_SESSION)) session_start();
         $halo_user = $_SESSION['halo_user'];
-        
+
         $request->update($input);
-        
+
         AmdActivity::create([
             'employee_id' => $halo_user->id,
             'detail' => 'A request from '.$request->client->name.' was transferred to '.AmdRegion::whereId($input['region_id'])->first()->name.' region.',
             'source_ip' => $_SERVER['REMOTE_ADDR']
         ]);
-        
+
         return Redirect::route('requests.submitted')
                 ->with('success', '<span class="font-weight-bold">Completed!</span><br />Request has been transferred.');
     }
-    
+
     public function mark_assigned(AmdRequest $request) {
         if (!isset($_SESSION)) session_start();
         $halo_user = $_SESSION['halo_user'];
-        
+
         $status = AmdStatus::where('description', 'Assigned')->first();
-        
+
         $request->update([
             'status_id' => $status->id
         ]);
@@ -246,21 +247,21 @@ class RequestsController extends Controller
             'status_id' => $status->id,
             'updated_by' => $halo_user->id
         ]);
-        
+
         AmdActivity::create([
             'employee_id' => $halo_user->id,
             'detail' => 'A request was assigned for '.$request->client->name.'.',
             'source_ip' => $_SERVER['REMOTE_ADDR']
         ]);
-        
+
         $service_date_time = DateTime::createFromFormat('Y-m-d H:i:s', $request->service_date_time);
         $jmp_link = config('app.url')."/requests/".$request->slug()."/jmp";
         $commanders = AmdResource::where('request_id', $request->id)->where('resource_type', 1)->get();
         $app_link = config('app.url')."/requests/assigned";
-        
+
         foreach ($commanders as $commander) {
             $user = AmdUser::whereId($commander->resource_id)->first();
-            
+
             $assignment_email_data = [
                 'name' => $user->name,
                 'location' => $request->service_location,
@@ -268,15 +269,16 @@ class RequestsController extends Controller
                 'time' => $service_date_time->format('g:i a'),
                 'app_link' => $app_link
             ];
-            
-            $recipient = $user->email;
-            
+
+            //$recipient = $user->email;
+            $recipient = AccEmployee::find($user->employee_id)->username.'@armadahalogen.com';
+
             Mail::send('emails.assignment', $assignment_email_data, function ($m) use ($recipient) {
                 $m->from('hens@halogen-group.com', 'Armada Halogen');
                 $m->to($recipient)->subject('Task Assignment | '. config('app.name'));
             });
         }
-        
+
         if ($request->client->email != null && $request->client->email != "") {
             $assigned_email_data = [
                 'name' => $request->client->name,
@@ -290,7 +292,7 @@ class RequestsController extends Controller
                 $m->to($client_email)->subject('Request Update');
             });
         }
-        
+
         if ($request->principal_email != null && $request->principal_email != "") {
             $assigned_email_data_p = [
                 'name' => $request->principal_name,
@@ -304,11 +306,11 @@ class RequestsController extends Controller
                 $m->to($principal_email)->subject('Request Update');
             });
         }
-        
+
         return Redirect::route('requests.submitted')
                 ->with('success', '<span class="font-weight-bold">Completed!</span><br />Request has been assigned.');
     }
-    
+
     public function assigned() {
         if (!isset($_SESSION)) session_start();
         $halo_user = $_SESSION['halo_user'];
@@ -321,11 +323,11 @@ class RequestsController extends Controller
         $requests = AmdRequest::whereRaw('id in ('.implode(',', $request_ids).')')->whereRaw('status_id in ('.$assigned_status->id.','.$started_status->id.','.$acknowledged_status->id.')')->get();
         return view('requests.assigned', compact('requests'));
     }
-    
+
     public function jmp(AmdRequest $request) {
         return view('requests.jmp', compact('request'));
     }
-    
+
     public function manage(AmdRequest $request) {
         if ($request->status->description == "Assigned") {
             return Redirect::route('requests.assigned')
@@ -333,13 +335,13 @@ class RequestsController extends Controller
         }
         return view('requests.manage', compact('request'));
     }
-    
+
     public function start(AmdRequest $request) {
         if (!isset($_SESSION)) session_start();
         $halo_user = $_SESSION['halo_user'];
-        
+
         $status = AmdStatus::where('description', 'Started')->first();
-        
+
         $request->update([
             'status_id' => $status->id
         ]);
@@ -348,28 +350,28 @@ class RequestsController extends Controller
             'status_id' => $status->id,
             'updated_by' => $halo_user->id
         ]);
-        
+
         AmdActivity::create([
             'employee_id' => $halo_user->id,
             'detail' => 'A request was started for '.$request->client->name.'.',
             'source_ip' => $_SERVER['REMOTE_ADDR']
         ]);
-        
+
         return Redirect::route('requests.manage', $request->slug())
                 ->with('success', '<span class="font-weight-bold">Completed!</span><br />Task has been started.');
     }
-    
+
     public function complete(AmdRequest $request) {
         if (!isset($_SESSION)) session_start();
         $halo_user = $_SESSION['halo_user'];
-        
+
         /*$input = Input::all();
         if ($input['interested'] == "Yes") {
             $request->update([
                 'rating' => $input['rating'],
                 'feedback' => $input['feedback']
             ]);
-            
+
             if ($request->client->email != null && $request->client->email != "") {
                 $completed_email_data = [
                     'name' => $request->client->name,
@@ -402,7 +404,7 @@ class RequestsController extends Controller
             }
         } else {*/
             $feedback_link = config('app.url')."/requests/".$request->slug()."/feedback";
-            
+
             if ($request->client->email != null && $request->client->email != "") {
                 $completed_email_data = [
                     'name' => $request->client->name,
@@ -431,9 +433,9 @@ class RequestsController extends Controller
                 });
             }
         }*/
-        
+
         $status = AmdStatus::where('description', 'Completed')->first();
-        
+
         $request->update([
             'status_id' => $status->id
         ]);
@@ -442,52 +444,52 @@ class RequestsController extends Controller
             'status_id' => $status->id,
             'updated_by' => $halo_user->id
         ]);
-        
+
         AmdActivity::create([
             'employee_id' => $halo_user->id,
             'detail' => 'A request was completed for '.$request->client->name.'.',
             'source_ip' => $_SERVER['REMOTE_ADDR']
         ]);
-        
+
         return Redirect::route('requests.assigned')
                 ->with('success', '<span class="font-weight-bold">Completed!</span><br />Task has been marked as completed.');
     }
-    
+
     public function add_sitrep(AmdRequest $request) {
         $input = Input::all();
-        
+
         if (!isset($_SESSION)) session_start();
         $halo_user = $_SESSION['halo_user'];
-        
+
         $input['request_id'] = $request->id;
         $input['user_id'] = AmdUser::where('employee_id', $halo_user->id)->first()->id;
-        
+
         AmdSituationReport::create($input);
         return Redirect::route('requests.manage', $request->slug())
                 ->with('success', '<span class="font-weight-bold">Done!</span><br />Situation report has been added.');
     }
-    
+
     public function feedback(AmdRequest $request) {
         return view('requests.feedback', compact('request'));
     }
-    
+
     public function submit_feedback(AmdRequest $request) {
         $input = Input::all();
-        
+
         $request->update([
             'rating' => $input['rating'],
             'feedback' => $input['feedback']
         ]);
-        
+
         return Redirect('thank_you');
     }
-    
+
     public function acknowledge(AmdRequest $request) {
         if (!isset($_SESSION)) session_start();
         $halo_user = $_SESSION['halo_user'];
-        
+
         $status = AmdStatus::where('description', 'Acknowledged')->first();
-        
+
         $request->update([
             'status_id' => $status->id
         ]);
@@ -496,23 +498,23 @@ class RequestsController extends Controller
             'status_id' => $status->id,
             'updated_by' => $halo_user->id
         ]);
-        
+
         AmdActivity::create([
             'employee_id' => $halo_user->id,
             'detail' => 'A request was acknowledged for '.$request->client->name.' by '.$halo_user['username'].'.',
             'source_ip' => $_SERVER['REMOTE_ADDR']
         ]);
-        
+
         return Redirect::route('requests.assigned')
                 ->with('success', '<span class="font-weight-bold">Completed!</span><br />Request has been acknowledged.');
     }
-    
+
     public function retreat(AmdRequest $request) {
         if (!isset($_SESSION)) session_start();
         $halo_user = $_SESSION['halo_user'];
-        
+
         $status = AmdStatus::where('description', 'Submitted')->first();
-        
+
         $request->update([
             'status_id' => $status->id
         ]);
@@ -521,13 +523,13 @@ class RequestsController extends Controller
             'status_id' => $status->id,
             'updated_by' => $halo_user->id
         ]);
-        
+
         AmdActivity::create([
             'employee_id' => $halo_user->id,
             'detail' => 'A request was marked for re-assignment for '.$request->client->name.'.',
             'source_ip' => $_SERVER['REMOTE_ADDR']
         ]);
-        
+
         return view('requests.treat', compact('request'));
     }
 }
