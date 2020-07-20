@@ -9,7 +9,7 @@ use GuzzleHttp\Client;
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <title>{{ $page_title }} | {{ config('app.name') }}</title>
-        
+
         <style type="text/css">
         #map {
           height: 100%;
@@ -90,7 +90,7 @@ use GuzzleHttp\Client;
         #target {
           width: 345px;
         }
-        
+
         .pac-container {
             background-color: #FFF;
             z-index: 100000;
@@ -105,14 +105,14 @@ use GuzzleHttp\Client;
             z-index: 1000;
         }​
         </style>
-        
+
         {!! Html::style('css/app.css') !!}
         {!! Html::style('css/mdb.min.css') !!}
         {!! Html::style('css/datatables.min.css') !!}
         {!! Html::style('css/responsive.dataTables.min.css') !!}
         {!! Html::style('css/buttons.dataTables.min.css') !!}
         {!! Html::style('fontawesome/css/all.css') !!}
-        
+
         {!! Html::script('js/jquery-3.3.1.min.js') !!}
         {!! Html::script('js/popper.min.js') !!}
         {!! Html::script('js/app.js') !!}
@@ -126,7 +126,7 @@ use GuzzleHttp\Client;
         {!! Html::script('js/vfs_fonts.js') !!}
         {!! Html::script('js/buttons.html5.min.js') !!}
         {!! Html::script('js/buttons.print.min.js') !!}
-        
+
         <script type="text/javascript">
             $(document).ready(function () {
                 $('#myTable1').DataTable({
@@ -147,7 +147,7 @@ use GuzzleHttp\Client;
                     ]
                 });
             });
-            
+
             function confirmDisable() {
                 if (confirm("Are you sure you want to disable this item?")) {
                     return true;
@@ -155,7 +155,7 @@ use GuzzleHttp\Client;
                     return false;
                 }
             }
-            
+
             function confirmDelete() {
                 if (confirm("Are you sure you want to completely delete this item?")) {
                     return true;
@@ -163,7 +163,7 @@ use GuzzleHttp\Client;
                     return false;
                 }
             }
-            
+
             function confirmSubmit() {
                 if (confirm("Are you sure you want to submit this request?")) {
                     return true;
@@ -171,7 +171,7 @@ use GuzzleHttp\Client;
                     return false;
                 }
             }
-            
+
             function confirmCancel() {
                 if (confirm("Are you sure you want to cancel this request?")) {
                     return true;
@@ -179,7 +179,7 @@ use GuzzleHttp\Client;
                     return false;
                 }
             }
-            
+
             function confirmTreat() {
                 if (confirm("Request will be immediately mapped to your region.\nAre you sure you want to treat this request?")) {
                     return true;
@@ -187,7 +187,7 @@ use GuzzleHttp\Client;
                     return false;
                 }
             }
-            
+
             function confirmMarkAsAssigned() {
                 if (confirm("Marking this request as assigned will notify the client and assigned commander(s).\nYou may want to review your resource assignments before moving ahead.\nAre you sure you want to continue?")) {
                     return true;
@@ -195,7 +195,7 @@ use GuzzleHttp\Client;
                     return false;
                 }
             }
-            
+
             function confirmStart() {
                 if (confirm("Are you sure you want to start this task?")) {
                     return true;
@@ -203,7 +203,7 @@ use GuzzleHttp\Client;
                     return false;
                 }
             }
-            
+
             function confirmComplete() {
                 if (confirm("Are you sure you want to complete this task?")) {
                     return true;
@@ -214,7 +214,7 @@ use GuzzleHttp\Client;
         </script>
 
         <!-- Styles -->
-        
+
     </head>
     <?php
     $more = "";
@@ -223,10 +223,10 @@ use GuzzleHttp\Client;
             $more .= "../";
         }
     }
-    
+
     if (!isset($_SESSION)) session_start();
     $halo_user = $_SESSION['halo_user'];
-    
+
     $client = new Client();
     $res = $client->request('GET', DB::table('acc_config')->whereId(1)->first()->master_url.'/api/getRoles', [
         'query' => [
@@ -253,7 +253,7 @@ use GuzzleHttp\Client;
             </div>
             <div class="row bg-secondary">
                 <div class="col-12" style="height: 10px;">
-                    
+
                 </div>
             </div>
             <div class="row">
@@ -280,7 +280,7 @@ use GuzzleHttp\Client;
                                         <a class="nav-link" href="#" data-toggle="modal" data-target="#modal1">Task Board</a>
                                     </nav>
                                 </div>
-                            </div> 
+                            </div>
                         </div>
                         @if (count(array_intersect($permissions, ['Supervisor'])) != 0)
                         <div class="card">
@@ -300,7 +300,7 @@ use GuzzleHttp\Client;
                                         <a class="nav-link" href="{{ route('analytics.directory') }}">Request Directory</a>
                                     </nav>
                                 </div>
-                            </div> 
+                            </div>
                         </div>
                         @endif
                         @if (count(array_intersect($permissions, ['Commander','Detailer'])) != 0)
@@ -323,7 +323,7 @@ use GuzzleHttp\Client;
                                         @endif
                                     </nav>
                                 </div>
-                            </div> 
+                            </div>
                         </div>
                         @endif
                         @if (count(array_intersect($permissions, ['Admin','Detailer'])) != 0)
@@ -343,10 +343,10 @@ use GuzzleHttp\Client;
                                         <!--<a class="nav-link" href="#">Invoicing</a>-->
                                     </nav>
                                 </div>
-                            </div> 
+                            </div>
                         </div>
                         @endif
-                        @if (count(array_intersect($permissions, ['Detailer'])) != 0)
+                        @if (count(array_intersect($permissions, ['Detailer','Admin','Supervisor','ControlRoom'])) != 0)
                         <div class="card">
                             <div class="card-header bg-white" id="heading-menu3" style="padding: 0;">
                                 <h5 class="mb-0">
@@ -358,11 +358,14 @@ use GuzzleHttp\Client;
                             <div id="collapse-menu3" class="collapse @if (isset($open_menu) && $open_menu == 'resource') show @endif" aria-labelledby="heading-menu3" data-parent="#accordion-menu">
                                 <div class="card-body">
                                     <nav class="nav flex-column">
+                                        @if (count(array_intersect($permissions, ['Detailer'])) != 0)
                                         <a class="nav-link" href="{{ route('regions.vehicles.index', App\AmdRegion::whereId(App\AmdUser::where('employee_id', $halo_user->id)->first()->region_id)->first()->slug()) }}">Vehicles</a>
                                         <a class="nav-link" href="{{ route('downtimes.index') }}">Resource Downtime</a>
+                                        @endif
+                                        <a class="nav-link" href="{{ route('vehicles.tracking') }}">Vehicle Tracking</a>
                                     </nav>
                                 </div>
-                            </div> 
+                            </div>
                         </div>
                         @endif
                         @if (count(array_intersect($permissions, ['Admin'])) != 0)
@@ -386,7 +389,7 @@ use GuzzleHttp\Client;
                                         <a class="nav-link" href="{{ route('config') }}">Configuration</a>
                                     </nav>
                                 </div>
-                            </div> 
+                            </div>
                         </div>
                         @endif
                         @if (count(array_intersect($permissions, ['ControlRoom', 'Supervisor', 'Admin'])) != 0)
@@ -407,7 +410,7 @@ use GuzzleHttp\Client;
                                         <a class="nav-link" href="{{ route('ers_clients.active') }}">Active Clients</a>
                                     </nav>
                                 </div>
-                            </div> 
+                            </div>
                         </div>
                         @endif
                     </div>
@@ -426,7 +429,7 @@ use GuzzleHttp\Client;
                 </div>
             </div>
         </div>
-        
+
         <div class="modal fade" id="modal1" tabindex="-1" role="dialog" aria-labelledby="modal1Title" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                 <div class="modal-content">
@@ -449,6 +452,6 @@ use GuzzleHttp\Client;
                 </div>
             </div>
         </div>
-        
+
     </body>
 </html>

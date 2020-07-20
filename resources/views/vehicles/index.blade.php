@@ -34,7 +34,8 @@ $halo_user = $_SESSION['halo_user'];
                                     <th width="15%"><strong>VEHICLE TYPE</strong></th>
                                     <th width="15%"><strong>VENDOR</strong></th>
                                     <th width="10%"><strong>REGION</strong></th>
-                                    <th width="15%"><strong>NEXT SERVICE</strong></th>
+                                    <th width="10%"><strong>NEXT SERVICE</strong></th>
+                                    <th width="10%"><strong>TRACEKR IMEI</strong></th>
                                     <th width="10%" data-priority="1">&nbsp;</th>
                                 </tr>
                             </thead>
@@ -48,6 +49,7 @@ $halo_user = $_SESSION['halo_user'];
                                     <td>{{ $vehicle->vendor->name }}</td>
                                     <td>{{ $vehicle->region->name }}</td>
                                     <td>{{ $vehicle->next_service_date }}</td>
+                                    <td>{{ $vehicle->tracker_imei }}</td>
                                     <td class="text-center">
                                         <a title="Edit" href="{{ route('regions.vehicles.edit', [$region->slug(), $vehicle->slug()]) }}"><i class="fas fa-edit"></i></a>&nbsp;&nbsp;
                                         <a title="Trash" href="{{ route('regions.vehicles.disable', [$region->slug(), $vehicle->slug()]) }}" onclick="return confirmDisable()"><i class="fas fa-trash"></i></a>
@@ -58,7 +60,7 @@ $halo_user = $_SESSION['halo_user'];
                             </tbody>
                         </table>
                     </div>
-                </div> 
+                </div>
             </div>
             <div class="card">
                 <div class="card-header bg-white text-primary" id="heading4" style="padding: 0;">
@@ -101,7 +103,7 @@ $halo_user = $_SESSION['halo_user'];
                             </tbody>
                         </table>
                     </div>
-                </div> 
+                </div>
             </div>
         </div>
     </div>

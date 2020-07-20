@@ -10,17 +10,19 @@ use App\AmdActivity;
 use App\AmdVehicle;
 use App\AmdRegion;
 
+use GuzzleHttp\Client;
+
 class VehiclesController extends Controller
 {
     public function index(AmdRegion $region) {
         $vehicles = AmdVehicle::where('region_id', $region->id)->get();
         return view('vehicles.index', compact('vehicles', 'region'));
     }
-    
+
     public function create(AmdRegion $region) {
         return view('vehicles.create', compact('region'));
     }
-    
+
     public function store(AmdRegion $region) {
         $input = Input::all();
         $error = "";
@@ -52,11 +54,11 @@ class VehiclesController extends Controller
             }
         }
     }
-    
+
     public function edit(AmdRegion $region, AmdVehicle $vehicle) {
         return view('vehicles.edit', compact('region', 'vehicle'));
     }
-    
+
     public function update(AmdRegion $region, AmdVehicle $vehicle) {
         $input = array_except(Input::all(), '_method');
         $error = "";
@@ -86,7 +88,7 @@ class VehiclesController extends Controller
             }
         }
     }
-    
+
     public function disable(AmdRegion $region, AmdVehicle $vehicle) {
         $input['active'] = false;
         $vehicle->update($input);
@@ -100,7 +102,7 @@ class VehiclesController extends Controller
         return Redirect::route('regions.vehicles.index', $region->slug())
                 ->with('success', '<span class="font-weight-bold">Successful!</span><br />Vehicle has been disabled.');
     }
-    
+
     public function enable(AmdRegion $region, AmdVehicle $vehicle) {
         $input['active'] = true;
         $vehicle->update($input);
@@ -113,5 +115,50 @@ class VehiclesController extends Controller
         ]);
         return Redirect::route('regions.vehicles.index', $region->slug())
                 ->with('success', '<span class="font-weight-bold">Successful!</span><br />Vehicle has been enabled.');
+    }
+
+    public function tracking() {
+        $vehicles = AmdVehicle::where('active', true)->get();
+        return view('vehicles.tracking', compact('vehicles'));
+    }
+
+    public function track(AmdVehicle $vehicle) {
+        $client = new Client();
+        $data = [
+            'date_time' => null,
+            'latitude' => null,
+            'longitude' => null,
+            'speed' => null,
+            'address' => null
+        ];
+        $response = $client->request('GET', env('FIFOTRACK_API_URL'), [
+            'query' => [
+                'api' => 'user',
+                'ver' => env('FIFOTRACK_API_VERSION'),
+                'key' => env('FIFOTRACK_USER_API_KEY'),
+                'cmd' => 'OBJECT_GET_LOCATIONS,'.$vehicle->tracker_imei
+            ]
+        ]);
+        $res = (array) json_decode($response->getBody());
+        if (isset($res[$vehicle->tracker_imei])) {
+            $tracker_data = $res[$vehicle->tracker_imei];
+            $response1 = $client->request('GET', env('FIFOTRACK_API_URL'), [
+                'query' => [
+                    'api' => 'user',
+                    'ver' => env('FIFOTRACK_API_VERSION'),
+                    'key' => env('FIFOTRACK_USER_API_KEY'),
+                    'cmd' => 'GET_ADDRESS,'.$tracker_data->lat.','.$tracker_data->lng
+                ]
+            ]);
+            $address = $response1->getBody();
+            $data = [
+                'date_time' => $tracker_data->dt_server,
+                'latitude' => $tracker_data->lat,
+                'longitude' => $tracker_data->lng,
+                'speed' => $tracker_data->speed,
+                'address' => $address
+            ];
+        }
+        return view('vehicles.track', compact('vehicle', 'data'));
     }
 }

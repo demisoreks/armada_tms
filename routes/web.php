@@ -80,6 +80,13 @@ Route::bind('vehicles', function($value, $route) {
     return App\AmdVehicle::findBySlug($value)->first();
 });
 
+Route::get('vehicles/tracking', [
+    'as' => 'vehicles.tracking', 'uses' => 'VehiclesController@tracking'
+])->middleware(['auth.user', 'auth.access:'.$link_id.',Detailer,Admin,Supervisor,ControlRoom']);
+Route::get('vehicles/{vehicle}/track', [
+    'as' => 'vehicles.track', 'uses' => 'VehiclesController@track'
+])->middleware(['auth.user', 'auth.access:'.$link_id.',Detailer,Admin,Supervisor,ControlRoom']);
+
 Route::get('clients/{client}/disable', [
     'as' => 'clients.disable', 'uses' => 'ClientsController@disable'
 ])->middleware(['auth.user', 'auth.access:'.$link_id.',Admin,Detailer']);
