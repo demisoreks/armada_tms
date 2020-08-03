@@ -21,6 +21,9 @@ use App\AmdState;
 use App\AmdRegion;
 use App\AmdStatus;
 use App\AccEmployee;
+use App\AmdConfig;
+
+use GuzzleHttp\Client;
 
 class RequestsController extends Controller
 {
@@ -531,5 +534,34 @@ class RequestsController extends Controller
         ]);
 
         return view('requests.treat', compact('request'));
+    }
+
+    public function direction(AmdRequest $request, Request $req) {
+        $input = $req->input();
+        $start_point = "";
+        $details = null;
+        if (isset($input['start_point'])) {
+            $start_point = $input['start_point'];
+
+            $client = new Client();
+            $response = $client->get('https://maps.googleapis.com/maps/api/directions/json', [
+                'query' => [
+                    'origin' => $start_point,
+                    'destination' => $request->service_location,
+                    'key' => AmdConfig::find(1)->google_places_api_key
+                ]
+            ]);
+            $res = json_decode($response->getBody());
+            if (isset($res->routes)) {
+                $routes = $res->routes;
+                if (count($routes) > 0) {
+                    $route = $routes[0];
+                    $legs = $route->legs;
+                    $details = $legs[0];
+                }
+            }
+        }
+
+        return view('requests.direction', compact('request', 'start_point', 'details'));
     }
 }

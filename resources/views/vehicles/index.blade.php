@@ -35,7 +35,7 @@ $halo_user = $_SESSION['halo_user'];
                                     <th width="15%"><strong>VENDOR</strong></th>
                                     <th width="10%"><strong>REGION</strong></th>
                                     <th width="10%"><strong>NEXT SERVICE</strong></th>
-                                    <th width="10%"><strong>TRACEKR IMEI</strong></th>
+                                    <th width="10%"><strong>TRACKER IMEI</strong></th>
                                     <th width="10%" data-priority="1">&nbsp;</th>
                                 </tr>
                             </thead>

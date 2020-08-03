@@ -15,6 +15,7 @@ $halo_user = $_SESSION['halo_user'];
         <a class="btn btn-info" data-toggle="modal" data-target="#modal1" title="Situation Report"><i class="fas fa-info"></i> Sitrep</a>
         @endif
         <a class="btn btn-secondary" href="{{ route('requests.jmp', $request->slug()) }}" target="_blank"><i class="fas fa-map"></i> JMP</a>
+        <a class="btn btn-blue-grey" href="{{ route('requests.direction', $request->slug()) }}" target="_blank"><i class="fas fa-location-arrow"></i> Direction</a>
     </div>
 </div>
 <div class="row">
@@ -65,7 +66,7 @@ $halo_user = $_SESSION['halo_user'];
                 <td>{{ $request->additional_information }}</td>
             </tr>
         </table>
-        
+
         <legend>Journey Stops</legend>
         @if (App\AmdRequestStop::where('request_id', $request->id)->count() > 0)
         <table class="table table-hover table-bordered table-striped">
@@ -104,7 +105,7 @@ $halo_user = $_SESSION['halo_user'];
             @endforeach
         </table>
         @endif
-        
+
         <legend>Resources</legend>
         @if (App\AmdResource::where('request_id', $request->id)->count() > 0)
         <table class="table table-hover table-bordered table-striped">

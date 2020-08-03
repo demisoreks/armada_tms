@@ -141,6 +141,9 @@ Route::put('config/update', [
     'as' => 'config.update', 'uses' => 'ConfigController@update'
 ])->middleware(['auth.user', 'auth.access:'.$link_id.',Admin']);
 
+Route::match(['get', 'post'], 'requests/{request}/direction', [
+    'as' => 'requests.direction', 'uses' => 'RequestsController@direction'
+])->middleware(['auth.user', 'auth.access:'.$link_id.',Commander']);
 Route::get('requests/{request}/retreat', [
     'as' => 'requests.retreat', 'uses' => 'RequestsController@retreat'
 ])->middleware(['auth.user', 'auth.access:'.$link_id.',Detailer']);

@@ -8,7 +8,7 @@
     </div>
 </div>
 <div class="row">
-    <div class="col-6">
+    <div class="col-md-6">
         <div class="card" style="margin-bottom: 20px;">
             <div class="card-header bg-white">
                 <strong>VEHICLE DETAILS</strong>
@@ -39,8 +39,7 @@
             </div>
         </div>
     </div>
-    <div class="col-6">
-
+    <div class="col-md-6">
         <div class="card" style="margin-bottom: 20px;">
             <div class="card-header bg-white">
                 <strong>LATEST TRACKING INFO</strong>
