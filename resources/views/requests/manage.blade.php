@@ -11,13 +11,23 @@ $halo_user = $_SESSION['halo_user'];
         @if ($request->status->description == "Assigned" || $request->status->description == "Acknowledged")
         <a class="btn btn-success" href="{{ route('requests.start', $request->slug()) }}" onclick="return confirmStart()"><i class="fas fa-check"></i> Start Task</a>
         @elseif ($request->status->description == "Started")
+        @if (!($request->service_type == "ER" && App\AmdIncident::where('request_id', $request->id)->count() == 0))
         <a class="btn btn-success" href="{{ route('requests.complete', $request->slug()) }}" onclick="return confirmComplete()" title="Complete Task"><i class="fas fa-check"></i> Complete Task</a>
+        @endif
         <a class="btn btn-info" data-toggle="modal" data-target="#modal1" title="Situation Report"><i class="fas fa-info"></i> Sitrep</a>
+        @if ($request->service_type == "ER")
+        <a class="btn btn-danger" data-toggle="modal" data-target="#modal3" title="Incident Report"><i class="fas fa-info"></i> Incident</a>
+        @endif
         @endif
         <a class="btn btn-secondary" href="{{ route('requests.jmp', $request->slug()) }}" target="_blank"><i class="fas fa-map"></i> JMP</a>
         <a class="btn btn-blue-grey" href="{{ route('requests.direction', $request->slug()) }}" target="_blank"><i class="fas fa-location-arrow"></i> Direction</a>
     </div>
 </div>
+@if ($request->service_type == "ER" && App\AmdIncident::where('request_id', $request->id)->count() == 0)
+<div class="alert alert-warning">
+An ER task can only be completed after an incident has been added.
+</div>
+@endif
 <div class="row">
     <div class="col-lg-6">
         <legend>Client Information</legend>
@@ -41,6 +51,10 @@ $halo_user = $_SESSION['halo_user'];
         </table>
         <legend>Request Details</legend>
         <table class="table table-hover table-bordered table-striped">
+            <tr>
+                <td width="45%" class="font-weight-bold">Service Type</td>
+                <td>{{ $request->service_type }}</td>
+            </tr>
             <tr>
                 <td width="45%" class="font-weight-bold">Pickup/Service Date/Time</td>
                 <td>{{ $request->service_date_time }}</td>
@@ -79,6 +93,17 @@ $halo_user = $_SESSION['halo_user'];
         @endif
     </div>
     <div class="col-lg-6">
+        <legend>Incident(s)</legend>
+        @if (App\AmdIncident::where('request_id', $request->id)->count() > 0)
+        <table class="table table-hover table-bordered table-striped">
+            @foreach (App\AmdIncident::where('request_id', $request->id)->get() as $incident)
+            <tr>
+                <td>{{ $incident->incidentType->description }}</td>
+            </tr>
+            @endforeach
+        </table>
+        @endif
+
         <legend>Service Selection</legend>
         @if (App\AmdRequestOption::where('request_id', $request->id)->count() > 0)
         <table class="table table-hover table-bordered table-striped">
@@ -159,6 +184,24 @@ $halo_user = $_SESSION['halo_user'];
             <div class="modal-body">
                 {!! Form::model(null, ['route' => ['requests.complete', $request->slug()], 'class' => 'form-group']) !!}
                 @include('requests/form6', ['submit_text' => 'Complete Task'])
+                {!! Form::close() !!}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal3" tabindex="-1" role="dialog" aria-labelledby="modal3Title" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><strong>Incident Report</strong></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                {!! Form::model(null, ['route' => ['requests.add_incident', $request->slug()], 'class' => 'form-group']) !!}
+                @include('requests/form10', ['submit_text' => 'Add Incident'])
                 {!! Form::close() !!}
             </div>
         </div>

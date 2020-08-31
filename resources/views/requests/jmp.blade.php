@@ -9,7 +9,7 @@ use GuzzleHttp\Client;
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <title>Journey Management Plan | {{ config('app.name') }}</title>
-        
+
         <style type="text/css">
         #map {
           height: 100%;
@@ -90,7 +90,7 @@ use GuzzleHttp\Client;
         #target {
           width: 345px;
         }
-        
+
         .pac-container {
             background-color: #FFF;
             z-index: 100000;
@@ -105,22 +105,22 @@ use GuzzleHttp\Client;
             z-index: 1000;
         }​
         </style>
-        
+
         {!! Html::style('css/app.css') !!}
         {!! Html::style('css/mdb.min.css') !!}
         {!! Html::style('css/datatables.min.css') !!}
         {!! Html::style('fontawesome/css/all.css') !!}
-        
+
         {!! Html::script('js/jquery-3.3.1.min.js') !!}
         {!! Html::script('js/popper.min.js') !!}
         {!! Html::script('js/app.js') !!}
         {!! Html::script('js/mdb.min.js') !!}
         {!! Html::script('js/datatables.min.js') !!}
-        
+
         <!-- Styles -->
-        
+
     </head>
-    
+
     <body style="background-color: #fff;">
         <div class="row">
             <div class="col-lg-6 offset-lg-3">
@@ -162,7 +162,7 @@ use GuzzleHttp\Client;
                                     <td colspan="2">{{ DateTime::createFromFormat('Y-m-d H:i:s', $request->service_date_time)->format('l, F j, Y') }} {{ DateTime::createFromFormat('Y-m-d H:i:s', $request->service_date_time)->format('g:i a') }}</td>
                                 </tr>
                                 <tr>
-                                    <td>Principal's Name</td>
+                                    <td>Principal's Name/Code</td>
                                     <td colspan="2">{{ $request->principal_name }}</td>
                                 </tr>
                                 <tr>
@@ -178,7 +178,7 @@ use GuzzleHttp\Client;
                                     <td colspan="2">{{ $request->additional_information }}</td>
                                 </tr>
                                 <tr>
-                                    <th colspan="3"><h4 class="font-weight-bold">Services</h4></th>
+                                    <th colspan="3"><h4 class="font-weight-bold">Services - {{ $request->service_type }}</h4></th>
                                 </tr>
                                 @foreach (App\AmdRequestOption::where('request_id', $request->id)->get() as $request_option)
                                 <tr>
@@ -203,7 +203,7 @@ use GuzzleHttp\Client;
                                 @endforeach
                                 @endif
                                 <tr>
-                                    <th colspan="3"><h4 class="font-weight-bold">Route(s)</h4></th>
+                                    <th colspan="3"><h4 class="font-weight-bold">Route Details</h4></th>
                                 </tr>
                                 <tr>
                                     <td>Start</td>
@@ -221,6 +221,17 @@ use GuzzleHttp\Client;
                                     </td>
                                 </tr>
                                 @endforeach
+                                @if (App\AmdRequestStop::where('request_id', $request->id)->count() > 0)
+                                <?php
+                                $route_link = "https://google.com/maps/dir/".urlencode(str_replace("&", "and", str_replace(" ", "+", $request->service_location)))."/";
+                                foreach (App\AmdRequestStop::where('request_id', $request->id)->get() as $stop) {
+                                    $route_link .= urlencode(str_replace("&", "and", str_replace(" ", "+", $stop->address)))."/";
+                                }
+                                ?>
+                                <tr>
+                                    <td colspan="3"><a target="_blank" class="btn btn-primary btn-block" href="{{ $route_link }}"><i class="fas fa-map"></i> View Route on Map</a></td>
+                                </tr>
+                                @endif
                             </table>
                         </td>
                     </tr>

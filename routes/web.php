@@ -141,6 +141,9 @@ Route::put('config/update', [
     'as' => 'config.update', 'uses' => 'ConfigController@update'
 ])->middleware(['auth.user', 'auth.access:'.$link_id.',Admin']);
 
+Route::post('requests/{request}/add_incident', [
+    'as' => 'requests.add_incident', 'uses' => 'RequestsController@add_incident'
+])->middleware(['auth.user', 'auth.access:'.$link_id.',Commander']);
 Route::match(['get', 'post'], 'requests/{request}/direction', [
     'as' => 'requests.direction', 'uses' => 'RequestsController@direction'
 ])->middleware(['auth.user', 'auth.access:'.$link_id.',Commander']);

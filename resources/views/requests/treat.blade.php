@@ -37,6 +37,10 @@ $halo_user = $_SESSION['halo_user'];
         <legend>Request Details</legend>
         <table class="table table-hover table-bordered table-striped">
             <tr>
+                <td width="45%" class="font-weight-bold">Service Type</td>
+                <td>{{ $request->service_type }}</td>
+            </tr>
+            <tr>
                 <td width="45%" class="font-weight-bold">Pickup/Service Date/Time</td>
                 <td>{{ $request->service_date_time }}</td>
             </tr>
@@ -45,7 +49,7 @@ $halo_user = $_SESSION['halo_user'];
                 <td>{{ $request->service_location }}</td>
             </tr>
             <tr>
-                <td class="font-weight-bold">Principal's Name</td>
+                <td class="font-weight-bold">Principal's Name/Code</td>
                 <td>{{ $request->principal_name }}</td>
             </tr>
             <tr>
@@ -61,7 +65,7 @@ $halo_user = $_SESSION['halo_user'];
                 <td>{{ $request->additional_information }}</td>
             </tr>
         </table>
-        
+
         <legend>Journey Stops</legend>
         @if (App\AmdRequestStop::where('request_id', $request->id)->count() > 0)
         <table class="table table-hover table-bordered table-striped">
@@ -100,7 +104,7 @@ $halo_user = $_SESSION['halo_user'];
             @endforeach
         </table>
         @endif
-        
+
         <legend>Resource Assignment <span><a data-toggle="modal" data-target="#modal1" title="Add Resource"><i class="fas fa-plus"></i></a></span></legend>
         @if (App\AmdResource::where('request_id', $request->id)->count() > 0)
         <table class="table table-hover table-bordered table-striped">

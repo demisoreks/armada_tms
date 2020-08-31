@@ -22,6 +22,8 @@ use App\AmdRegion;
 use App\AmdStatus;
 use App\AccEmployee;
 use App\AmdConfig;
+use App\AmdVehicle;
+use App\AmdIncident;
 
 use GuzzleHttp\Client;
 
@@ -560,8 +562,35 @@ class RequestsController extends Controller
                     $details = $legs[0];
                 }
             }
+        } else {
+            $vehicle_resources = AmdResource::where('request_id', $request->id)->where('resource_type', 0);
+            if ($vehicle_resources->count() > 0) {
+                $vehicle_resource = $vehicle_resources->first();
+                $vehicle_id = $vehicle_resource->resource_id;
+                $vehicle = AmdVehicle::find($vehicle_id);
+                $vehicle_data = VehiclesController::trackVehicle($vehicle);
+                $start_point = $vehicle_data['address'];
+            }
         }
 
         return view('requests.direction', compact('request', 'start_point', 'details'));
+    }
+
+    public function add_incident(AmdRequest $request) {
+        $input = Input::all();
+
+        if (!isset($_SESSION)) session_start();
+        $halo_user = $_SESSION['halo_user'];
+
+        $input['request_id'] = $request->id;
+        $input['incident_date_time'] = $input['incident_date']." ".$input['incident_time'];
+        unset($input['incident_date']);
+        unset($input['incident_time']);
+        $input['commander'] = AmdUser::where('employee_id', $halo_user->id)->first()->id;
+        $input['detailer'] = 0;
+
+        AmdIncident::create($input);
+        return Redirect::route('requests.manage', $request->slug())
+                ->with('success', '<span class="font-weight-bold">Done!</span><br />Incident has been added.');
     }
 }

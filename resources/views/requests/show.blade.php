@@ -32,6 +32,10 @@
         <legend>Request Details <span class="text-right"><a data-toggle="modal" data-target="#modal1" title="Edit Request Details"><i class="fas fa-edit"></i></a></span></legend>
         <table class="table table-hover table-bordered table-striped">
             <tr>
+                <td width="45%" class="font-weight-bold">Service Type</td>
+                <td>{{ $request->service_type }}</td>
+            </tr>
+            <tr>
                 <td width="45%" class="font-weight-bold">Pickup/Service Date/Time</td>
                 <td>{{ $request->service_date_time }}</td>
             </tr>
@@ -40,7 +44,7 @@
                 <td>{{ $request->service_location }}</td>
             </tr>
             <tr>
-                <td class="font-weight-bold">Principal's Name</td>
+                <td class="font-weight-bold">Principal's Name/Code</td>
                 <td>{{ $request->principal_name }}</td>
             </tr>
             <tr>
@@ -70,7 +74,7 @@
             @endforeach
         </table>
         @endif
-        
+
         <legend>Journey Stops <span><a data-toggle="modal" data-target="#modal3" title="Add Stop"><i class="fas fa-plus"></i></a></span></legend>
         @if (App\AmdRequestStop::where('request_id', $request->id)->count() > 0)
         <table class="table table-hover table-bordered table-striped">
@@ -153,7 +157,7 @@ function initAutocomplete() {
   var input = document.getElementById('service_location');
   var searchBox = new google.maps.places.SearchBox(input);
   map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
-  
+
   // Create the search box and link it to the UI element.
   var input2 = document.getElementById('address');
   var searchBox2 = new google.maps.places.SearchBox(input2);

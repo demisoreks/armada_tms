@@ -10,7 +10,8 @@ $halo_user = $_SESSION['halo_user'];
         <table id="myTable1" class="display-1 table table-condensed table-hover table-striped responsive" width="100%">
             <thead>
                 <tr class="text-center">
-                    <th width="15%"><strong>PICKUP/SERVICE DATE/TIME</strong></th>
+                    <th width="12%"><strong>PICKUP/SERVICE DATE/TIME</strong></th>
+                    <th width="5%"><strong>TYPE</strong></th>
                     <th><strong>CLIENT INFORMATION</strong></th>
                     <th width="20%"><strong>PICKUP/SERVICE LOCATION</strong></th>
                     <th width="20%"><strong>STOPS</strong></th>
@@ -24,6 +25,7 @@ $halo_user = $_SESSION['halo_user'];
 
                 <tr>
                     <td>{{ $request->service_date_time }}</td>
+                    <td>{{ $request->service_type }}</td>
                     <td>{{ $request->client->name }}<br />{{ $request->client->mobile_no }}<br />{{ $request->client->email }}</td>
                     <td>{{ $request->service_location }}</td>
                     <td>

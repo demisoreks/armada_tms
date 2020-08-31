@@ -122,7 +122,7 @@ class VehiclesController extends Controller
         return view('vehicles.tracking', compact('vehicles'));
     }
 
-    public function track(AmdVehicle $vehicle) {
+    static function trackVehicle(AmdVehicle $vehicle) {
         $client = new Client();
         $data = [
             'date_time' => null,
@@ -159,6 +159,13 @@ class VehiclesController extends Controller
                 'address' => $address
             ];
         }
+
+        return $data;
+    }
+
+    public function track(AmdVehicle $vehicle) {
+        $data = $this->trackVehicle($vehicle);
+
         return view('vehicles.track', compact('vehicle', 'data'));
     }
 }
