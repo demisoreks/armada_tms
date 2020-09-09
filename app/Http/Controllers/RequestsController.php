@@ -24,6 +24,10 @@ use App\AccEmployee;
 use App\AmdConfig;
 use App\AmdVehicle;
 use App\AmdIncident;
+use App\AmdErsLocation;
+use App\AmdErsChecklist;
+use App\AmdErsVisit;
+use App\AmdErsVisitDetail;
 
 use GuzzleHttp\Client;
 
@@ -69,11 +73,29 @@ class RequestsController extends Controller
 
     public function update(AmdRequest $request) {
         $input = array_except(Input::all(), '_method');
-        $input['service_date_time'] = $input['service_date'].' '.$input['service_time'];
+
+        if (!isset($_SESSION)) session_start();
+        $halo_user = $_SESSION['halo_user'];
+
+        if ($input['service_type'] == "ER") {
+            $ers_location = AmdErsLocation::find($input['ers_location_id']);
+            if ($ers_location->latitude != null && $ers_location->longitude != null) {
+                $input['service_location'] = $ers_location->latitude.",".$ers_location->longitude;
+            } else {
+                $input['service_location'] = $ers_location->address;
+            }
+            $input['service_date_time'] = new DateTime();
+            $input['principal_name'] = $ers_location->name;
+            $input['region_id'] = AmdUser::where('employee_id', $halo_user->id)->first()->region_id;
+        } else {
+            $input['service_date_time'] = $input['service_date'].' '.$input['service_time'];
+            $input['region_id'] = AmdState::whereId($input['state_id'])->first()->region_id;
+            unset($input['user_id']);
+        }
         unset($input['service_date']);
         unset($input['service_time']);
-        $input['region_id'] = AmdState::whereId($input['state_id'])->first()->region_id;
         unset($input['state_id']);
+        unset($input['ers_location_id']);
         $request->update($input);
         return Redirect::route('requests.show', $request->slug())
                 ->with('success', '<span class="font-weight-bold">Done!</span><br />Request details have been updated.');
@@ -124,7 +146,38 @@ class RequestsController extends Controller
         if (!isset($_SESSION)) session_start();
         $halo_user = $_SESSION['halo_user'];
 
-        $status = AmdStatus::where('description', 'Submitted')->first();
+        if ($request->service_type == "ER") {
+            $resource_input['request_id'] = $request->id;
+            $resource_input['resource_type'] = 1;
+            $resource_input['resource_id'] = $request->user_id;
+            $resource_input['quantity'] = 0;
+            AmdResource::create($resource_input);
+
+            $status = AmdStatus::where('description', 'Assigned')->first();
+
+            $jmp_link = config('app.url')."/requests/".$request->slug()."/jmp";
+            $app_link = config('app.url')."/requests/assigned";
+
+            $user = AmdUser::whereId($request->user_id)->first();
+
+            $assignment_email_data = [
+                'name' => $user->name,
+                'location' => $request->service_location,
+                'date' => 'Immediate',
+                'time' => 'Immediate',
+                'app_link' => $app_link
+            ];
+
+            $recipient = $user->email;
+            //$recipient = AccEmployee::find($user->employee_id)->username.'@armadahalogen.com';
+
+            Mail::send('emails.assignment', $assignment_email_data, function ($m) use ($recipient) {
+                $m->from('hens@halogen-group.com', 'Armada Halogen');
+                $m->to($recipient)->subject('Task Assignment | '. config('app.name'));
+            });
+        } else {
+            $status = AmdStatus::where('description', 'Submitted')->first();
+        }
 
         $request->update([
             'status_id' => $status->id
@@ -275,8 +328,8 @@ class RequestsController extends Controller
                 'app_link' => $app_link
             ];
 
-            //$recipient = $user->email;
-            $recipient = AccEmployee::find($user->employee_id)->username.'@armadahalogen.com';
+            $recipient = $user->email;
+            //$recipient = AccEmployee::find($user->employee_id)->username.'@armadahalogen.com';
 
             Mail::send('emails.assignment', $assignment_email_data, function ($m) use ($recipient) {
                 $m->from('hens@halogen-group.com', 'Armada Halogen');
@@ -410,18 +463,20 @@ class RequestsController extends Controller
         } else {*/
             $feedback_link = config('app.url')."/requests/".$request->slug()."/feedback";
 
-            if ($request->client->email != null && $request->client->email != "") {
-                $completed_email_data = [
-                    'name' => $request->client->name,
-                    'feedback_link' => $feedback_link
-                ];
+            if ($request->service_type != "ER") {
+                if ($request->client->email != null && $request->client->email != "") {
+                    $completed_email_data = [
+                        'name' => $request->client->name,
+                        'feedback_link' => $feedback_link
+                    ];
 
-                $client_email = $request->client->email;
+                    $client_email = $request->client->email;
 
-                Mail::send('emails.request_completed_feedback', $completed_email_data, function ($m) use ($client_email) {
-                    $m->from('hens@halogensecurity.com', 'Armada Halogen');
-                    $m->to($client_email)->subject('Task Completed | Feedback Required');
-                });
+                    Mail::send('emails.request_completed_feedback', $completed_email_data, function ($m) use ($client_email) {
+                        $m->from('hens@halogensecurity.com', 'Armada Halogen');
+                        $m->to($client_email)->subject('Task Completed | Feedback Required');
+                    });
+                }
             }
 
             /*if ($request->principal_email != null && $request->principal_email != "") {
@@ -583,14 +638,53 @@ class RequestsController extends Controller
         $halo_user = $_SESSION['halo_user'];
 
         $input['request_id'] = $request->id;
-        $input['incident_date_time'] = $input['incident_date']." ".$input['incident_time'];
-        unset($input['incident_date']);
-        unset($input['incident_time']);
         $input['commander'] = AmdUser::where('employee_id', $halo_user->id)->first()->id;
         $input['detailer'] = 0;
 
         AmdIncident::create($input);
         return Redirect::route('requests.manage', $request->slug())
                 ->with('success', '<span class="font-weight-bold">Done!</span><br />Incident has been added.');
+    }
+
+    public function update_checklist(AmdRequest $request) {
+        $input = Input::all();
+
+        if (!isset($_SESSION)) session_start();
+        $halo_user = $_SESSION['halo_user'];
+
+        $visit_input['ers_location_id'] = AmdErsLocation::where('name', $request->principal_name)->where('client_id', $request->client_id)->first()->id;
+        $visit_input['user_id'] = AmdUser::where('employee_id', $halo_user->id)->first()->id;
+        $visit_input['entry_time'] = $input['entry_time'];
+        $visit_input['exit_time'] = $input['exit_time'];
+
+        if (AmdErsVisit::where('request_id', $request->id)->count() > 0) {
+            $visit = AmdErsVisit::where('request_id', $request->id)->first();
+            $visit->update($visit_input);
+        } else {
+            $visit_input['request_id'] = $request->id;
+            $visit = AmdErsVisit::create($visit_input);
+        }
+
+        foreach (AmdErsChecklist::where('response', true)->get() as $check) {
+            if ($check->clients == null || $check->clients == "" || in_array($request->client_id, explode(',', $check->clients))) {
+                if (isset($input[$check->id])) {
+                    if (AmdErsVisitDetail::where('ers_visit_id', $visit->id)->where('description', $check->description)->count() > 0) {
+                        $detail = AmdErsVisitDetail::where('ers_visit_id', $visit->id)->where('description', $check->description)->first();
+                        $detail->update([
+                            'option' => $input[$check->id]
+                        ]);
+                    } else {
+                        AmdErsVisitDetail::create([
+                            'ers_visit_id' => $visit->id,
+                            'description' => $check->description,
+                            'option' => $input[$check->id]
+                        ]);
+                    }
+                }
+            }
+        }
+
+        return Redirect::route('requests.manage', $request->slug())
+                ->with('success', '<span class="font-weight-bold">Done!</span><br />Checklist has been updated.');
     }
 }

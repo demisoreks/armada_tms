@@ -312,6 +312,25 @@ use GuzzleHttp\Client;
                     </div>
                     <div class="card" style="margin-bottom: 20px;">
                         <div class="card-header bg-white">
+                            <strong>LIVE SITREP</strong>
+                        </div>
+                        <div class="card-body bg-white" style="height: 300px; overflow-y: scroll;">
+                            <marquee direction="up">
+                                @foreach (App\AmdSituationReport::orderBy('created_at', 'desc')->limit(20)->get() as $sitrep)
+                                <p class="text-center">
+                                    <span class="text-danger">{{ $sitrep->situation->description }}</span><br />
+                                    <strong>Location:</strong> {{ $sitrep->location }}<br />
+                                    <strong>Remarks:</strong> {{ $sitrep->remarks }}<br />
+                                    <span class="text-info">Submitted at {{ Carbon\Carbon::parse($sitrep->created_at)->format('h:ma M j, Y') }}<br />
+                                    by {{ $sitrep->user->name }}, {{ $sitrep->user->region->name }} Region</span><br />
+                                </p>
+                                @endforeach
+                            </marquee>
+                        </div>
+                    </div>
+                    <!--
+                    <div class="card" style="margin-bottom: 20px;">
+                        <div class="card-header bg-white">
                             <strong>STATISTICS</strong>
                         </div>
                         <div class="card-body bg-white">
@@ -330,6 +349,7 @@ use GuzzleHttp\Client;
                             <div class="alert alert-danger">All Commanders must close tasks promptly to avoid penalties!</div>
                         </div>
                     </div>
+                    -->
                 </div>
             </div>
             <div class="row">

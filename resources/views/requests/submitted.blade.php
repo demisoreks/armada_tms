@@ -84,7 +84,7 @@ $halo_user = $_SESSION['halo_user'];
                                 @foreach ($other_requests as $request)
                                     @if ($request->region_id == App\AmdUser::where('employee_id', $halo_user->id)->first()->region_id)
                                 <tr>
-                                    <td>{{ App\AmdRequestStatus::where('request_id', $request->id)->where('status_id', App\AmdStatus::where('description', 'Submitted')->first()->id)->first()->created_at }}</td>
+                                    <td>@if (App\AmdRequestStatus::where('request_id', $request->id)->where('status_id', App\AmdStatus::where('description', 'Submitted')->first()->id)->count() > 0) {{ App\AmdRequestStatus::where('request_id', $request->id)->where('status_id', App\AmdStatus::where('description', 'Submitted')->first()->id)->first()->created_at }} @else {{ App\AmdRequestStatus::where('request_id', $request->id)->where('status_id', App\AmdStatus::where('description', 'Assigned')->first()->id)->first()->created_at }} @endif</td>
                                     <td>{{ $request->service_type }}</td>
                                     <td>{{ $request->client->name }}<br />{{ $request->client->mobile_no }}<br />{{ $request->client->email }}</td>
                                     <td>{{ $request->service_location }}</td>

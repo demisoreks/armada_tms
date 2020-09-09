@@ -112,6 +112,7 @@ use GuzzleHttp\Client;
         {!! Html::style('css/responsive.dataTables.min.css') !!}
         {!! Html::style('css/buttons.dataTables.min.css') !!}
         {!! Html::style('fontawesome/css/all.css') !!}
+        {!! Html::style('css/select2.min.css') !!}
 
         {!! Html::script('js/jquery-3.3.1.min.js') !!}
         {!! Html::script('js/popper.min.js') !!}
@@ -126,6 +127,7 @@ use GuzzleHttp\Client;
         {!! Html::script('js/vfs_fonts.js') !!}
         {!! Html::script('js/buttons.html5.min.js') !!}
         {!! Html::script('js/buttons.print.min.js') !!}
+        {!! Html::script('js/select2.min.js') !!}
 
         <script type="text/javascript">
             $(document).ready(function () {
@@ -317,9 +319,11 @@ use GuzzleHttp\Client;
                                     <nav class="nav flex-column">
                                         @if (count(array_intersect($permissions, ['Commander'])) != 0)
                                         <a class="nav-link" href="{{ route('requests.assigned') }}">My Tasks</a>
+                                        <a class="nav-link" href="{{ route('visits.clients') }}">Patrol</a>
                                         @endif
                                         @if (count(array_intersect($permissions, ['Detailer'])) != 0)
                                         <a class="nav-link" href="{{ route('requests.submitted') }}">Detailing</a>
+                                        <a class="nav-link" href="{{ route('incidents.review') }}">Incident Review</a>
                                         @endif
                                     </nav>
                                 </div>
@@ -339,6 +343,7 @@ use GuzzleHttp\Client;
                                 <div class="card-body">
                                     <nav class="nav flex-column">
                                         <a class="nav-link" href="{{ route('clients.index') }}">Clients</a>
+                                        <a class="nav-link" href="{{ route('ers_locations.index') }}">ERS Locations</a>
                                         <a class="nav-link" href="{{ route('requests.index') }}">Service Requests</a>
                                         <!--<a class="nav-link" href="#">Invoicing</a>-->
                                     </nav>

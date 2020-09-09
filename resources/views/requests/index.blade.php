@@ -28,25 +28,27 @@
                                 <tr class="text-center">
                                     <th width="10%"><strong>DATE/TIME INITIATED</strong></th>
                                     <th><strong>CLIENT INFORMATION</strong></th>
+                                    <th width="10%"><strong>SERVICE TYPE</strong></th>
                                     <th width="20%"><strong>INITIATED BY</strong></th>
                                     <th width="15%" data-priority="1">&nbsp;</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach ($requests as $request)
-                                    
+
                                 <tr>
                                     <td>{{ $request->created_at }}</td>
                                     <td>{{ $request->client->name }}<br />{{ $request->client->mobile_no }}<br />{{ $request->client->email }}</td>
+                                    <td>{{ $request->service_type }}</td>
                                     <td>{{ App\AccEmployee::whereId(App\AmdRequestStatus::where('request_id', $request->id)->where('status_id', 1)->first()->updated_by)->first()->username }}</td>
                                     <td><a class="btn btn-primary btn-block btn-sm" href="{{ route('requests.show', [$request->slug()]) }}"><i class="fas fa-eye"></i> View Request</a></td>
                                 </tr>
-                                    
+
                                 @endforeach
                             </tbody>
                         </table>
                     </div>
-                </div> 
+                </div>
             </div>
         </div>
     </div>

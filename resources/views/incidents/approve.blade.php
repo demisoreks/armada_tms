@@ -1,17 +1,10 @@
-@extends('app', ['page_title' => 'Service Requests', 'open_menu' => 'client'])
+@extends('app', ['page_title' => 'Review', 'open_menu' => 'task'])
 
 <?php
 if (!isset($_SESSION)) session_start();
 $halo_user = $_SESSION['halo_user'];
 ?>
 @section('content')
-<div class="row">
-    <div class="col-12" style="margin-bottom: 20px;">
-        <a class="btn btn-primary" href="{{ route('requests.index') }}"><i class="fas fa-list"></i> Initiated Requests</a>
-        <a class="btn btn-success" href="{{ route('requests.submit', $request->slug()) }}" onclick="return confirmSubmit()"><i class="fas fa-check"></i> Submit Request</a>
-        <a class="btn btn-danger" href="{{ route('requests.cancel', $request->slug()) }}" onclick="return confirmCancel()"><i class="fas fa-trash"></i> Cancel Request</a>
-    </div>
-</div>
 <div class="row">
     <div class="col-lg-6">
         <legend>Client Information</legend>
@@ -33,7 +26,7 @@ $halo_user = $_SESSION['halo_user'];
                 <td>{{ $request->client->email }}</td>
             </tr>
         </table>
-        <legend>Request Details <span class="text-right text-info"><a data-toggle="modal" data-target="#modal1" title="Edit Request Details"><i class="fas fa-edit"></i></a></span></legend>
+        <legend>Request Details</legend>
         <table class="table table-hover table-bordered table-striped">
             <tr>
                 <td width="45%" class="font-weight-bold">Service Type</td>
@@ -48,7 +41,7 @@ $halo_user = $_SESSION['halo_user'];
                 <td>{{ $request->service_location }}</td>
             </tr>
             <tr>
-                <td class="font-weight-bold">Principal's Name/Code</td>
+                <td class="font-weight-bold">Principal's Name</td>
                 <td>{{ $request->principal_name }}</td>
             </tr>
             <tr>
@@ -66,34 +59,53 @@ $halo_user = $_SESSION['halo_user'];
         </table>
     </div>
     <div class="col-lg-6">
-        @if ($request->service_type == "SM")
+        @if ($request->service_type == "ER")
 
-        <legend>Service Selection <span><a data-toggle="modal" data-target="#modal2" title="Add Service"><i class="fas fa-plus"></i></a></span></legend>
-        @if (App\AmdRequestOption::where('request_id', $request->id)->count() > 0)
+        <legend>Incident(s)</legend>
+        @if (App\AmdIncident::where('request_id', $request->id)->count() > 0)
         <table class="table table-hover table-bordered table-striped">
-            @foreach (App\AmdRequestOption::where('request_id', $request->id)->get() as $request_option)
+            @foreach (App\AmdIncident::where('request_id', $request->id)->get() as $incident)
             <tr>
-                <td width="50%">{{ App\AmdService::whereId(App\AmdOption::whereId($request_option->option_id)->first()->service_id)->first()->description }} | {{ App\AmdOption::whereId($request_option->option_id)->first()->description }}</td>
-                <td width="30%">{{ date('M j', strtotime($request_option->start_date)) }} - {{ date('M j', strtotime($request_option->end_date)) }}</td>
-                <td class="text-center"><a href="{{ route('requests.remove_service', $request_option->slug()) }}" title="Remove Service"><i class="fas fa-trash"></i></a></td>
+                <td>
+                    {{ $incident->incidentType->description }} | {{ $incident->incident_date_time }}<br />
+                    <strong>Description:</strong> {{ $incident->description }}<br />
+                    <strong>Action Taken:</strong> {{ $incident->action_taken }}<br />
+                    <strong>Follow-up Action:</strong> {{ $incident->follow_up_action }}<br />
+                </td>
             </tr>
             @endforeach
         </table>
         @endif
 
-        <legend>Journey Stops <span><a data-toggle="modal" data-target="#modal3" title="Add Stop"><i class="fas fa-plus"></i></a></span></legend>
-        @if (App\AmdRequestStop::where('request_id', $request->id)->count() > 0)
+        <legend>Checklist</legend>
         <table class="table table-hover table-bordered table-striped">
-            @foreach (App\AmdRequestStop::where('request_id', $request->id)->get() as $request_stop)
             <tr>
-                <td width="80%">{{ $request_stop->address }}</td>
-                <td class="text-center"><a href="{{ route('requests.remove_stop', $request_stop->slug()) }}" title="Remove Stop"><i class="fas fa-trash"></i></a></td>
+                <td>
+                    Entry Time<br />
+                    <span class="text-info">{{ App\AmdErsVisit::where('request_id', $request->id)->first()->entry_time }}</span><br />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Exit Time<br />
+                    <span class="text-info">{{ App\AmdErsVisit::where('request_id', $request->id)->first()->exit_time }}</span><br />
+                </td>
+            </tr>
+            @foreach (App\AmdErsVisitDetail::where('ers_visit_id', App\AmdErsVisit::where('request_id', $request->id)->first()->id)->get() as $detail)
+            <tr>
+                <td>
+                    {{ $detail->description }}<br />
+                    <span class="text-info">{{ $detail->option }}</span><br />
+                </td>
             </tr>
             @endforeach
         </table>
-        @endif
 
         @endif
+
+        {!! Form::model(null, ['route' => ['incidents.submit_approval', $request->slug()], 'class' => 'form-group']) !!}
+        @include('incidents/form', ['submit_text' => 'Submit'])
+        {!! Form::close() !!}
     </div>
 </div>
 
@@ -103,49 +115,50 @@ $halo_user = $_SESSION['halo_user'];
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title"><strong>Edit Request Details</strong></h5>
+                <h5 class="modal-title"><strong>Situation Report</strong></h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                {!! Form::model($request, ['route' => ['requests.update', $request->slug()], 'class' => 'form-group']) !!}
-                @method('PUT')
-                @include('requests/form', ['submit_text' => 'Update Request'])
+                {!! Form::model(null, ['route' => ['requests.add_sitrep', $request->slug()], 'class' => 'form-group']) !!}
+                @include('requests/form5', ['submit_text' => 'Add Report'])
                 {!! Form::close() !!}
             </div>
         </div>
     </div>
 </div>
+
 <div class="modal fade" id="modal2" tabindex="-1" role="dialog" aria-labelledby="modal2Title" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title"><strong>Add Service</strong></h5>
+                <h5 class="modal-title"><strong>Principal's Feedback</strong></h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                {!! Form::model(null, ['route' => ['requests.add_service', $request->slug()], 'class' => 'form-group']) !!}
-                @include('requests/form1', ['submit_text' => 'Add Service'])
+                {!! Form::model(null, ['route' => ['requests.complete', $request->slug()], 'class' => 'form-group']) !!}
+                @include('requests/form6', ['submit_text' => 'Complete Task'])
                 {!! Form::close() !!}
             </div>
         </div>
     </div>
 </div>
+
 <div class="modal fade" id="modal3" tabindex="-1" role="dialog" aria-labelledby="modal3Title" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title"><strong>Add Stop</strong></h5>
+                <h5 class="modal-title"><strong>Incident Report</strong></h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                {!! Form::model(null, ['route' => ['requests.add_stop', $request->slug()], 'class' => 'form-group']) !!}
-                @include('requests/form2', ['submit_text' => 'Add Stop'])
+                {!! Form::model(null, ['route' => ['requests.add_incident', $request->slug()], 'class' => 'form-group']) !!}
+                @include('requests/form10', ['submit_text' => 'Add Incident'])
                 {!! Form::close() !!}
             </div>
         </div>
@@ -162,14 +175,9 @@ function initAutocomplete() {
   });
 
   // Create the search box and link it to the UI element.
-  var input = document.getElementById('service_location');
+  var input = document.getElementById('location');
   var searchBox = new google.maps.places.SearchBox(input);
   map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
-
-  // Create the search box and link it to the UI element.
-  var input2 = document.getElementById('address');
-  var searchBox2 = new google.maps.places.SearchBox(input2);
-  map.controls[google.maps.ControlPosition.TOP_LEFT].push(input2);
 }
 </script>
 @endsection

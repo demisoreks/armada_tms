@@ -5,7 +5,7 @@ use GuzzleHttp\Client;
 
 if (!isset($_SESSION)) session_start();
 $halo_user = $_SESSION['halo_user'];
-        
+
 $client = new Client();
 $res = $client->request('GET', DB::table('acc_config')->whereId(1)->first()->master_url.'/api/getRoles', [
     'query' => [
@@ -34,6 +34,16 @@ $permissions = json_decode($res->getBody());
             </div>
         </a>
     </div>
+    <div class="col-md-3" style="margin-bottom: 20px;">
+        <a href="{{ route('visits.clients') }}">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h1 class="text-info"><i class="fas fa-shield-alt"></i></h1>
+                    <h5 class="text-primary">Patrol</h5>
+                </div>
+            </div>
+        </a>
+    </div>
     @endif
     @if (count(array_intersect($permissions, ['Detailer'])) != 0)
     <div class="col-md-3" style="margin-bottom: 20px;">
@@ -42,6 +52,16 @@ $permissions = json_decode($res->getBody());
                 <div class="card-body text-center">
                     <h1 class="text-info"><i class="fas fa-share"></i></h1>
                     <h5 class="text-primary">Detailing</h5>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-3" style="margin-bottom: 20px;">
+        <a href="{{ route('incidents.review') }}">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h1 class="text-info"><i class="fas fa-car-crash"></i></h1>
+                    <h5 class="text-primary">Incident Review</h5>
                 </div>
             </div>
         </a>
@@ -58,6 +78,16 @@ $permissions = json_decode($res->getBody());
                 <div class="card-body text-center">
                     <h1 class="text-info"><i class="fas fa-users"></i></h1>
                     <h5 class="text-primary">Clients</h5>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-3" style="margin-bottom: 20px;">
+        <a href="{{ route('ers_locations.index') }}">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h1 class="text-info"><i class="fas fa-map-marker"></i></h1>
+                    <h5 class="text-primary">ERS Locations</h5>
                 </div>
             </div>
         </a>

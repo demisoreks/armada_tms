@@ -141,6 +141,9 @@ Route::put('config/update', [
     'as' => 'config.update', 'uses' => 'ConfigController@update'
 ])->middleware(['auth.user', 'auth.access:'.$link_id.',Admin']);
 
+Route::post('requests/{request}/update_checklist', [
+    'as' => 'requests.update_checklist', 'uses' => 'RequestsController@update_checklist'
+])->middleware(['auth.user', 'auth.access:'.$link_id.',Commander']);
 Route::post('requests/{request}/add_incident', [
     'as' => 'requests.add_incident', 'uses' => 'RequestsController@add_incident'
 ])->middleware(['auth.user', 'auth.access:'.$link_id.',Commander']);
@@ -272,4 +275,44 @@ Route::get('ers_clients/{ers_client}/view', [
 ])->middleware(['auth.user', 'auth.access:'.$link_id.',ControlRoom,Supervisor,Admin']);
 Route::bind('ers_clients', function($value, $route) {
     return App\AmdErsClient::findBySlug($value)->first();
+});
+
+Route::get('ers_locations/{ers_location}/disable', [
+    'as' => 'ers_locations.disable', 'uses' => 'ErsLocationsController@disable'
+])->middleware(['auth.user', 'auth.access:'.$link_id.',Admin,Detailer']);
+Route::get('ers_locations/{ers_location}/enable', [
+    'as' => 'ers_locations.enable', 'uses' => 'ErsLocationsController@enable'
+])->middleware(['auth.user', 'auth.access:'.$link_id.',Admin,Detailer']);
+Route::resource('ers_locations', 'ErsLocationsController')->middleware(['auth.user', 'auth.access:'.$link_id.',Admin,Detailer']);
+Route::bind('ers_locations', function($value, $route) {
+    return App\AmdErsLocation::findBySlug($value)->first();
+});
+
+Route::post('incidents/{request}/submit_approval', [
+    'as' => 'incidents.submit_approval', 'uses' => 'IncidentsController@submit_approval'
+])->middleware(['auth.user', 'auth.access:'.$link_id.',Detailer']);
+Route::get('incidents/{request}/approve', [
+    'as' => 'incidents.approve', 'uses' => 'IncidentsController@approve'
+])->middleware(['auth.user', 'auth.access:'.$link_id.',Detailer']);
+Route::get('incidents/review', [
+    'as' => 'incidents.review', 'uses' => 'IncidentsController@review'
+])->middleware(['auth.user', 'auth.access:'.$link_id.',Detailer']);
+Route::bind('incidents', function($value, $route) {
+    return App\AmdIncident::findBySlug($value)->first();
+});
+
+Route::post('vists/{ers_location}/store', [
+    'as' => 'visits.store', 'uses' => 'VisitsController@store'
+])->middleware(['auth.user', 'auth.access:'.$link_id.',Commander']);
+Route::get('vists/{ers_location}/create', [
+    'as' => 'visits.create', 'uses' => 'VisitsController@create'
+])->middleware(['auth.user', 'auth.access:'.$link_id.',Commander']);
+Route::get('vists/{client}/locations', [
+    'as' => 'visits.locations', 'uses' => 'VisitsController@locations'
+])->middleware(['auth.user', 'auth.access:'.$link_id.',Commander']);
+Route::get('vists/clients', [
+    'as' => 'visits.clients', 'uses' => 'VisitsController@clients'
+])->middleware(['auth.user', 'auth.access:'.$link_id.',Commander']);
+Route::bind('visits', function($value, $route) {
+    return App\AmdErsVisit::findBySlug($value)->first();
 });

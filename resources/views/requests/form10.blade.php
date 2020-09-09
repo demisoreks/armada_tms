@@ -7,8 +7,7 @@
 <div class="form-group row">
     {!! Form::label('incident_date_time', 'Incident Date/Time *', ['class' => 'col-md-4 col-form-label']) !!}
     <div class="col-md-6">
-        {!! Form::date('incident_date', $value = null, ['class' => 'form-control', 'required' => true]) !!}
-        {!! Form::time('incident_time', $value = null, ['class' => 'form-control', 'required' => true]) !!}
+        <input type="datetime-local" id="incident_date_time" name="incident_date_time" class="form-control" required>
     </div>
 </div>
 <div class="form-group row">

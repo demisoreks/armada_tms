@@ -16,4 +16,8 @@ class AmdIncident extends Model
     public function incidentType() {
         return $this->belongsTo('App\AmdIncidentType');
     }
+
+    public function request() {
+        return $this->belongsTo('App\AmdRequest');
+    }
 }

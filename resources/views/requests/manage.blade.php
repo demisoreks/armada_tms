@@ -11,7 +11,7 @@ $halo_user = $_SESSION['halo_user'];
         @if ($request->status->description == "Assigned" || $request->status->description == "Acknowledged")
         <a class="btn btn-success" href="{{ route('requests.start', $request->slug()) }}" onclick="return confirmStart()"><i class="fas fa-check"></i> Start Task</a>
         @elseif ($request->status->description == "Started")
-        @if (!($request->service_type == "ER" && App\AmdIncident::where('request_id', $request->id)->count() == 0))
+        @if (!($request->service_type == "ER" && (App\AmdIncident::where('request_id', $request->id)->count() == 0 || App\AmdErsVisit::where('request_id', $request->id)->count() == 0)))
         <a class="btn btn-success" href="{{ route('requests.complete', $request->slug()) }}" onclick="return confirmComplete()" title="Complete Task"><i class="fas fa-check"></i> Complete Task</a>
         @endif
         <a class="btn btn-info" data-toggle="modal" data-target="#modal1" title="Situation Report"><i class="fas fa-info"></i> Sitrep</a>
@@ -25,7 +25,7 @@ $halo_user = $_SESSION['halo_user'];
 </div>
 @if ($request->service_type == "ER" && App\AmdIncident::where('request_id', $request->id)->count() == 0)
 <div class="alert alert-warning">
-An ER task can only be completed after an incident has been added.
+An ER task can only be completed after an incident has been added and checklist updated.
 </div>
 @endif
 <div class="row">
@@ -81,6 +81,8 @@ An ER task can only be completed after an incident has been added.
             </tr>
         </table>
 
+        @if ($request->service_type == "SM")
+
         <legend>Journey Stops</legend>
         @if (App\AmdRequestStop::where('request_id', $request->id)->count() > 0)
         <table class="table table-hover table-bordered table-striped">
@@ -91,8 +93,12 @@ An ER task can only be completed after an incident has been added.
             @endforeach
         </table>
         @endif
+
+        @endif
     </div>
     <div class="col-lg-6">
+        @if ($request->service_type == "ER")
+
         <legend>Incident(s)</legend>
         @if (App\AmdIncident::where('request_id', $request->id)->count() > 0)
         <table class="table table-hover table-bordered table-striped">
@@ -103,6 +109,21 @@ An ER task can only be completed after an incident has been added.
             @endforeach
         </table>
         @endif
+
+        <?php
+        if (App\AmdErsVisit::where('request_id', $request->id)->count() > 0) {
+            $visit = App\AmdErsVisit::where('request_id', $request->id)->first();
+        }
+        ?>
+
+        <legend>Checklist</legend>
+        {!! Form::model(null, ['route' => ['requests.update_checklist', $request->slug()], 'class' => 'form-group']) !!}
+        @include('requests/form11', ['submit_text' => 'Update Checklist'])
+        {!! Form::close() !!}
+
+        @endif
+
+        @if ($request->service_type == "SM")
 
         <legend>Service Selection</legend>
         @if (App\AmdRequestOption::where('request_id', $request->id)->count() > 0)
@@ -148,6 +169,8 @@ An ER task can only be completed after an incident has been added.
             </tr>
             @endforeach
         </table>
+        @endif
+
         @endif
     </div>
 </div>
