@@ -10,7 +10,7 @@
     <div class="col-12">
         <legend>New ERS Location</legend>
         {!! Form::model(new App\AmdErsLocation, ['route' => ['ers_locations.store'], 'class' => 'form-group']) !!}
-            @include('visits/form', ['submit_text' => 'Create ERS Location'])
+            @include('ers_locations/form', ['submit_text' => 'Create ERS Location'])
         {!! Form::close() !!}
     </div>
 </div>
