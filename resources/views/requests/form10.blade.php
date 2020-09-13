@@ -11,21 +11,21 @@
     </div>
 </div>
 <div class="form-group row">
-    {!! Form::label('description', 'Description', ['class' => 'col-md-4 col-form-label']) !!}
+    {!! Form::label('description', 'Description *', ['class' => 'col-md-4 col-form-label']) !!}
     <div class="col-md-6">
-        {!! Form::textarea('description', $value = null, ['class' => 'form-control', 'placeholder' => 'Description', 'maxlength' => 1000, 'rows' => 3]) !!}
+        {!! Form::textarea('description', $value = null, ['class' => 'form-control', 'placeholder' => 'Description', 'maxlength' => 1000, 'rows' => 3, 'required' => true]) !!}
     </div>
 </div>
 <div class="form-group row">
-    {!! Form::label('action_taken', 'Action Taken', ['class' => 'col-md-4 col-form-label']) !!}
+    {!! Form::label('action_taken', 'Action Taken *', ['class' => 'col-md-4 col-form-label']) !!}
     <div class="col-md-6">
-        {!! Form::textarea('action_taken', $value = null, ['class' => 'form-control', 'placeholder' => 'Action Taken', 'maxlength' => 1000, 'rows' => 3]) !!}
+        {!! Form::textarea('action_taken', $value = null, ['class' => 'form-control', 'placeholder' => 'Action Taken', 'maxlength' => 1000, 'rows' => 3, 'required' => true]) !!}
     </div>
 </div>
 <div class="form-group row">
-    {!! Form::label('follow_up_action', 'Follow-Up Action', ['class' => 'col-md-4 col-form-label']) !!}
+    {!! Form::label('follow_up_action', 'Follow-Up Action *', ['class' => 'col-md-4 col-form-label']) !!}
     <div class="col-md-6">
-        {!! Form::textarea('follow_up_action', $value = null, ['class' => 'form-control', 'placeholder' => 'Follow-Up Action', 'maxlength' => 1000, 'rows' => 3]) !!}
+        {!! Form::textarea('follow_up_action', $value = null, ['class' => 'form-control', 'placeholder' => 'Follow-Up Action', 'maxlength' => 1000, 'rows' => 3, 'required' => true]) !!}
     </div>
 </div>
 <div class="form-group row">

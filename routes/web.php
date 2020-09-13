@@ -141,8 +141,17 @@ Route::put('config/update', [
     'as' => 'config.update', 'uses' => 'ConfigController@update'
 ])->middleware(['auth.user', 'auth.access:'.$link_id.',Admin']);
 
+Route::get('requests/{ers_file}/remove_file', [
+    'as' => 'requests.remove_file', 'uses' => 'RequestsController@remove_file'
+])->middleware(['auth.user', 'auth.access:'.$link_id.',Commander']);
+Route::post('requests/{request}/upload_file', [
+    'as' => 'requests.upload_file', 'uses' => 'RequestsController@upload_file'
+])->middleware(['auth.user', 'auth.access:'.$link_id.',Commander']);
 Route::post('requests/{request}/update_checklist', [
     'as' => 'requests.update_checklist', 'uses' => 'RequestsController@update_checklist'
+])->middleware(['auth.user', 'auth.access:'.$link_id.',Commander']);
+Route::get('requests/{incident}/remove_incident', [
+    'as' => 'requests.remove_incident', 'uses' => 'RequestsController@remove_incident'
 ])->middleware(['auth.user', 'auth.access:'.$link_id.',Commander']);
 Route::post('requests/{request}/add_incident', [
     'as' => 'requests.add_incident', 'uses' => 'RequestsController@add_incident'
@@ -316,3 +325,7 @@ Route::get('vists/clients', [
 Route::bind('visits', function($value, $route) {
     return App\AmdErsVisit::findBySlug($value)->first();
 });
+
+Route::get('requests/{request}/response_report', [
+    'as' => 'requests.response_report', 'uses' => 'RequestsController@response_report'
+]);

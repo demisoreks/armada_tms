@@ -8,7 +8,7 @@ use GuzzleHttp\Client;
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>Journey Management Plan | {{ config('app.name') }}</title>
+        <title>@if ($request->service_type == "SM") Journey Management Plan @else Task Plan @endif | {{ config('app.name') }}</title>
 
         <style type="text/css">
         #map {
@@ -124,7 +124,7 @@ use GuzzleHttp\Client;
     <body style="background-color: #fff;">
         <div class="row">
             <div class="col-lg-6 offset-lg-3">
-                <h2 class="text-center font-weight-bold">Journey Management Plan</h2>
+                <h2 class="text-center font-weight-bold">@if ($request->service_type == "SM") Journey Management Plan @else Task Plan @endif</h2>
                 <table class="table table-bordered">
                     <tr>
                         <td>

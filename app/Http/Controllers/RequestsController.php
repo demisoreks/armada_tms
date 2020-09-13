@@ -8,6 +8,7 @@ use Input;
 use Redirect;
 use DateTime;
 use Mail;
+use Storage;
 use App\AmdRequest;
 use App\AmdClient;
 use App\AmdRequestStatus;
@@ -26,6 +27,7 @@ use App\AmdVehicle;
 use App\AmdIncident;
 use App\AmdErsLocation;
 use App\AmdErsChecklist;
+use App\AmdErsFile;
 use App\AmdErsVisit;
 use App\AmdErsVisitDetail;
 
@@ -527,12 +529,12 @@ class RequestsController extends Controller
         AmdSituationReport::create($input);
         return Redirect::route('requests.manage', $request->slug())
                 ->with('success', '<span class="font-weight-bold">Done!</span><br />Situation report has been added.');
+
     }
 
     public function feedback(AmdRequest $request) {
         return view('requests.feedback', compact('request'));
     }
-
     public function submit_feedback(AmdRequest $request) {
         $input = Input::all();
 
@@ -646,6 +648,13 @@ class RequestsController extends Controller
                 ->with('success', '<span class="font-weight-bold">Done!</span><br />Incident has been added.');
     }
 
+    public function remove_incident(AmdIncident $incident) {
+        $request = AmdRequest::whereId($incident->request_id)->first();
+        $incident->delete();
+        return Redirect::route('requests.manage', $request->slug())
+                ->with('success', '<span class="font-weight-bold">Done!</span><br />Incident has been removed.');
+    }
+
     public function update_checklist(AmdRequest $request) {
         $input = Input::all();
 
@@ -686,5 +695,51 @@ class RequestsController extends Controller
 
         return Redirect::route('requests.manage', $request->slug())
                 ->with('success', '<span class="font-weight-bold">Done!</span><br />Checklist has been updated.');
+    }
+
+    public function upload_file(AmdRequest $request) {
+        $input = Input::all();
+
+        if (!isset($_SESSION)) session_start();
+        $halo_user = $_SESSION['halo_user'];
+
+        if (isset($input['evidence'])) {
+            $evidence = $input['evidence'];
+            if ($evidence->getSize() > 5000000) {
+                return Redirect::back()
+                        ->with('error', '<span class="font-weight-bold">Error!</span><br />File is too large.')
+                        ->withInput();
+            } else {
+                $evidence_input['description'] = $input['description'];
+                $evidence_input['filename'] = date('YmdHis').md5($evidence_input['description']);
+                $evidence_input['extension'] = $evidence->getClientOriginalExtension();
+                $evidence_input['request_id'] = $request->id;
+                if (Storage::put('public/ers/evidences/'.$evidence_input['filename'].'.'.$evidence_input['extension'], file_get_contents($evidence->getRealPath()))) {
+                    AmdErsFile::create($evidence_input);
+                    return Redirect::route('requests.manage', $request->slug())
+                            ->with('success', '<span class="font-weight-bold">Done!</span><br />File has been uploaded.');
+                } else {
+                    return Redirect::back()
+                            ->with('error', '<span class="font-weight-bold">Error!</span><br />File upload failed.')
+                            ->withInput();
+                }
+            }
+        } else {
+            return Redirect::back()
+                    ->with('error', '<span class="font-weight-bold">Error!</span><br />No file selected.')
+                    ->withInput();
+        }
+    }
+
+    public function remove_file(AmdErsFile $ers_file) {
+        $request = AmdRequest::whereId($ers_file->request_id)->first();
+        $ers_file->delete();
+        Storage::delete('public/ers/evidences/'.$ers_file->filename.'.'.$ers_file->extension);
+        return Redirect::route('requests.manage', $request->slug())
+                ->with('success', '<span class="font-weight-bold">Done!</span><br />File has been removed.');
+    }
+
+    public function response_report(AmdRequest $request) {
+        return view('requests.response_report', compact('request'));
     }
 }

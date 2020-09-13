@@ -77,6 +77,18 @@ $halo_user = $_SESSION['halo_user'];
         </table>
         @endif
 
+        <legend>Uploaded Files</legend>
+        @if (App\AmdErsFile::where('request_id', $request->id)->count() > 0)
+        <table class="table table-hover table-bordered table-striped">
+            @foreach (App\AmdErsFile::where('request_id', $request->id)->get() as $file)
+            <tr>
+                <td>{{ $file->description }}</td>
+                <td width="100" align="center"><a title="View/Download File" class="btn btn-info btn-sm" href="{{ config('app.url') }}{{ Storage::url('public/ers/evidences/'.$file->filename.'.'.$file->extension) }}" target="_blank">View/Download</a></td>
+            </tr>
+            @endforeach
+        </table>
+        @endif
+
         <legend>Checklist</legend>
         <table class="table table-hover table-bordered table-striped">
             <tr>

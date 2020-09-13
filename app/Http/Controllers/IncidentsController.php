@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 
 use Input;
 use Redirect;
+use Mail;
+use App\AmdConfig;
 use App\AmdIncident;
 use App\AmdRequest;
 use App\AmdUser;
@@ -33,6 +35,28 @@ class IncidentsController extends Controller
         $user = AmdUser::where('employee_id', $halo_user->id)->first();
         $input['detailer_user_id'] = $user->id;
         $request->update($input);
+
+        $er_email = AmdConfig::find(1)->er_email;
+        if ($er_email) {
+            $incident_array = [];
+            foreach (AmdIncident::where('request_id', $request->id)->get() as $incident) {
+                array_push($incident_array, $incident->incidentType->description);
+            }
+            $report_link = config('app.url')."/requests/".$request->slug()."/response_report";
+
+            $notification_data = [
+                'client_name' => $request->client->name,
+                'location' => $request->principal.' ('.$request->service_location.')',
+                'incidents' => implode(", ", $incident_array),
+                'report_link' => $report_link
+            ];
+
+            Mail::send('emails.ers_notification', $notification_data, function ($m) use ($er_email) {
+                $m->from('noreply@halogen-group.com', 'Armada Halogen');
+                $m->to($er_email)->subject('ER Notification | '. config('app.name'));
+            });
+        }
+
         return Redirect::route('incidents.review', $request->slug())
                 ->with('success', '<span class="font-weight-bold">Done!</span><br />Incident review has been completed.');
     }

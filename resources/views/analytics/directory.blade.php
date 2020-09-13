@@ -4,6 +4,12 @@
 <div class="row" style="margin-bottom: 20px;">
     <div class="col-12">
         {!! Form::model($param, ['route' => ['analytics.directory'], 'class' => 'form-inline']) !!}
+            <div class="col-auto">
+                {!! Form::label('service_type', 'Service Type', []) !!}
+            </div>
+            <div class="col-auto">
+                {!! Form::select('service_type', ['SM' => 'SM - Secured Mobility', 'ER' => 'ER - Emergency Response'], $value = null, ['class' => 'form-control', 'required' => true]) !!}
+            </div>
             @include('analytics/date_form', ['submit_text' => 'Search'])
         {!! Form::close() !!}
     </div>

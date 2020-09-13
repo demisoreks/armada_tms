@@ -36,7 +36,7 @@ $halo_user = $_SESSION['halo_user'];
         <legend>Request Details <span class="text-right text-info"><a data-toggle="modal" data-target="#modal1" title="Edit Request Details"><i class="fas fa-edit"></i></a></span></legend>
         <table class="table table-hover table-bordered table-striped">
             <tr>
-                <td width="45%" class="font-weight-bold">Service Type</td>
+                <td width="45%" class="font-weight-bold">Entry Time</td>
                 <td>{{ $request->service_type }}</td>
             </tr>
             <tr>

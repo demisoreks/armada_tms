@@ -97,7 +97,7 @@ An ER task can only be completed after an incident has been added and checklist 
         @endif
     </div>
     <div class="col-lg-6">
-        @if ($request->service_type == "ER")
+        @if ($request->service_type == "ER" && $request->status->description == "Started")
 
         <legend>Incident(s)</legend>
         @if (App\AmdIncident::where('request_id', $request->id)->count() > 0)
@@ -105,6 +105,25 @@ An ER task can only be completed after an incident has been added and checklist 
             @foreach (App\AmdIncident::where('request_id', $request->id)->get() as $incident)
             <tr>
                 <td>{{ $incident->incidentType->description }}</td>
+                <td>{{ $incident->description }}</td>
+                <td width="100" align="center"><a title="Remove Incident" class="btn btn-danger btn-sm" href="{{ route('requests.remove_incident', $incident->slug()) }}" onclick="return confirmDelete()">Remove</a></td>
+            </tr>
+            @endforeach
+        </table>
+        @endif
+
+        <legend>File Upload</legend>
+        {!! Form::model(null, ['route' => ['requests.upload_file', $request->slug()], 'class' => 'form-group', 'files' => true]) !!}
+        @include('requests/form12', ['submit_text' => 'Update File'])
+        {!! Form::close() !!}
+
+        @if (App\AmdErsFile::where('request_id', $request->id)->count() > 0)
+        <table class="table table-hover table-bordered table-striped">
+            @foreach (App\AmdErsFile::where('request_id', $request->id)->get() as $file)
+            <tr>
+                <td>{{ $file->description }}</td>
+                <td width="100" align="center"><a title="View/Download File" class="btn btn-info btn-sm" href="{{ config('app.url') }}{{ Storage::url('public/ers/evidences/'.$file->filename.'.'.$file->extension) }}" target="_blank">View/Download</a></td>
+                <td width="100" align="center"><a title="Remove File" class="btn btn-danger btn-sm" href="{{ route('requests.remove_file', $file->slug()) }}" onclick="return confirmDelete()">Remove</a></td>
             </tr>
             @endforeach
         </table>

@@ -49,7 +49,8 @@
                 <td>{{ $request->additional_information }}</td>
             </tr>
         </table>
-        
+
+        @if ($request->service_type == "SM")
         <legend>Journey Stops</legend>
         @if (App\AmdRequestStop::where('request_id', $request->id)->count() > 0)
         <table class="table table-hover table-bordered table-striped">
@@ -60,6 +61,8 @@
             @endforeach
         </table>
         @endif
+        @endif
+
         <legend>Feedback</legend>
         <table class="table table-hover table-bordered table-striped">
             <tr>
@@ -73,6 +76,7 @@
         </table>
     </div>
     <div class="col-lg-6">
+        @if ($request->service_type == "SM")
         <legend>Service Selection</legend>
         @if (App\AmdRequestOption::where('request_id', $request->id)->count() > 0)
         <table class="table table-hover table-bordered table-striped">
@@ -84,7 +88,8 @@
             @endforeach
         </table>
         @endif
-        
+        @endif
+
         <legend>Resources</legend>
         @if (App\AmdResource::where('request_id', $request->id)->count() > 0)
         <table class="table table-hover table-bordered table-striped">
@@ -103,7 +108,69 @@
             @endforeach
         </table>
         @endif
-        
+
+        @if ($request->service_type == "ER")
+
+        <legend>Incident(s)</legend>
+        @if (App\AmdIncident::where('request_id', $request->id)->count() > 0)
+        <table class="table table-hover table-bordered table-striped">
+            @foreach (App\AmdIncident::where('request_id', $request->id)->get() as $incident)
+            <tr>
+                <td>
+                    {{ $incident->incidentType->description }} | {{ $incident->incident_date_time }}<br />
+                    <strong>Description:</strong> {{ $incident->description }}<br />
+                    <strong>Action Taken:</strong> {{ $incident->action_taken }}<br />
+                    <strong>Follow-up Action:</strong> {{ $incident->follow_up_action }}<br />
+                </td>
+            </tr>
+            @endforeach
+        </table>
+        @endif
+
+        <legend>Uploaded Files</legend>
+        @if (App\AmdErsFile::where('request_id', $request->id)->count() > 0)
+        <table class="table table-hover table-bordered table-striped">
+            @foreach (App\AmdErsFile::where('request_id', $request->id)->get() as $file)
+            <tr>
+                <td>{{ $file->description }}</td>
+                <td width="100" align="center"><a title="View/Download File" class="btn btn-info btn-sm" href="{{ config('app.url') }}{{ Storage::url('public/ers/evidences/'.$file->filename.'.'.$file->extension) }}" target="_blank">View/Download</a></td>
+            </tr>
+            @endforeach
+        </table>
+        @endif
+
+        <legend>Checklist</legend>
+        <table class="table table-hover table-bordered table-striped">
+            <tr>
+                <td>
+                    Entry Time<br />
+                    <span class="text-info">{{ App\AmdErsVisit::where('request_id', $request->id)->first()->entry_time }}</span><br />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Exit Time<br />
+                    <span class="text-info">{{ App\AmdErsVisit::where('request_id', $request->id)->first()->exit_time }}</span><br />
+                </td>
+            </tr>
+            @foreach (App\AmdErsVisitDetail::where('ers_visit_id', App\AmdErsVisit::where('request_id', $request->id)->first()->id)->get() as $detail)
+            <tr>
+                <td>
+                    {{ $detail->description }}<br />
+                    <span class="text-info">{{ $detail->option }}</span><br />
+                </td>
+            </tr>
+            @endforeach
+            <tr>
+                <td>
+                    Detailer's Comment<br />
+                    <span class="text-info">{{ $request->detailer_review }}</span><br />
+                </td>
+            </tr>
+        </table>
+
+        @endif
+
         <legend>Request Flow</legend>
         <table class="table table-hover table-bordered table-striped">
             <tr>

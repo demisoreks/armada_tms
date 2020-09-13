@@ -31,6 +31,12 @@
                 </div>
             </div>
             <div class="form-group row">
+                {!! Form::label('er_email', 'ER Email', ['class' => 'col-md-2 col-form-label']) !!}
+                <div class="col-md-4">
+                    {!! Form::email('er_email', $value = null, ['class' => 'form-control', 'placeholder' => 'ER Email', 'required' => true, 'maxlength' => 100]) !!}
+                </div>
+            </div>
+            <div class="form-group row">
                 <div class="col-md-10 offset-md-2">
                     {!! Form::submit('Update Configuration', ['class' => 'btn btn-primary']) !!}
                 </div>

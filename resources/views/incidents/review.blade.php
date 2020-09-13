@@ -38,7 +38,7 @@
                                         {{ $incident->incidentType->description }}<br />
                                         @endforeach
                                     </td>
-                                    <td>@if ($request->user_id) {{ App\AmdUser::find($request->user_id)->first()->name }} @endif</td>
+                                    <td>@if ($request->user_id) {{ App\AmdUser::find($request->user_id)->name }} @endif</td>
                                     <td><a class="btn btn-primary btn-block btn-sm" href="{{ route('incidents.approve', [$request->slug()]) }}"><i class="fas fa-eye"></i> Review</a></td>
                                 </tr>
 
