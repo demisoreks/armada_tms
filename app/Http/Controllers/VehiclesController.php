@@ -9,7 +9,8 @@ use Input;
 use App\AmdActivity;
 use App\AmdVehicle;
 use App\AmdRegion;
-
+use DateTime;
+use DateTimeZone;
 use GuzzleHttp\Client;
 
 class VehiclesController extends Controller
@@ -151,8 +152,13 @@ class VehiclesController extends Controller
                 ]
             ]);
             $address = $response1->getBody();
+            $time_in_gmt = $tracker_data->dt_server;
+            $tracking_time_zone = "UTC";
+            $track_date_time = new DateTime($time_in_gmt, new DateTimeZone($tracking_time_zone));
+            $track_date_time->setTimezone(new DateTimeZone(config('app.timezone')));
+            $real_date_time = $track_date_time->format('Y-m-d H:i:s');
             $data = [
-                'date_time' => $tracker_data->dt_server,
+                'date_time' => $real_date_time,
                 'latitude' => $tracker_data->lat,
                 'longitude' => $tracker_data->lng,
                 'speed' => $tracker_data->speed,

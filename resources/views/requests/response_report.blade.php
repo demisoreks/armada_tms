@@ -152,7 +152,7 @@ use GuzzleHttp\Client;
                     </tr>
                     <tr>
                         <td><strong>Duty Officer</strong></td>
-                        <td>@if ($request->detailer_user_id) {{ App\AmdUser::find($request->user_id)->full_name }} @endif</td>
+                        <td>@if ($request->detailer_user_id) {{ App\AmdUser::find($request->detailer_user_id)->full_name }} @endif</td>
                     </tr>
                     <tr>
                         <td colspan="2"><strong>INCIDENT(S)</strong></td>
@@ -186,7 +186,6 @@ use GuzzleHttp\Client;
                     <tr>
                         <td><strong>{{ $detail->description }}</strong></td>
                         <td>{{ $detail->option }}</td>
-                    </td>
                     </tr>
                     @endforeach
                     <tr>

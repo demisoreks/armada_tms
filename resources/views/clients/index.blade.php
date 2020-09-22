@@ -28,6 +28,7 @@
                                     <th width="20%"><strong>EMAIL ADDRESS</strong></th>
                                     <th width="15%"><strong>ADDRESS</strong></th>
                                     <th width="7%"><strong>ERS CODE NAME</strong></th>
+                                    <th><strong>ERS REPORT LINKS</strong></th>
                                     <th width="10%" data-priority="1">&nbsp;</th>
                                     <th width="10%" data-priority="1">&nbsp;</th>
                                 </tr>
@@ -42,6 +43,10 @@
                                     <td>{{ $client->email }}</td>
                                     <td>{{ $client->address }}</td>
                                     <td>{{ $client->ers_code_name }}</td>
+                                    <td>
+                                        <strong>Responses:</strong> {{ config('app.url')."/reports/clients/".$client->slug()."/responses" }}<br />
+                                        <strong>Patrol Visits:</strong> {{ config('app.url')."/reports/clients/".$client->slug()."/patrols" }}
+                                    </td>
                                     <td><a class="btn btn-primary btn-block btn-sm" href="{{ route('requests.initiate', $client->slug()) }}">Make Request</a></td>
                                     <td class="text-center">
                                         <a title="Edit" href="{{ route('clients.edit', [$client->slug()]) }}"><i class="fas fa-edit"></i></a>&nbsp;&nbsp;

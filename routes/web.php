@@ -329,3 +329,9 @@ Route::bind('visits', function($value, $route) {
 Route::get('requests/{request}/response_report', [
     'as' => 'requests.response_report', 'uses' => 'RequestsController@response_report'
 ]);
+Route::match(['get', 'post'], 'reports/clients/{client}/responses', [
+    'as' => 'reports.clients.responses', 'uses' => 'ClientReportsController@responses'
+]);
+Route::match(['get', 'post'], 'reports/clients/{client}/patrols', [
+    'as' => 'reports.clients.patrols', 'uses' => 'ClientReportsController@patrols'
+]);
