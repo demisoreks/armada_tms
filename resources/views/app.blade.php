@@ -397,6 +397,7 @@ use GuzzleHttp\Client;
                             </div>
                         </div>
                         @endif
+                        <!--
                         @if (count(array_intersect($permissions, ['ControlRoom', 'Supervisor', 'Admin'])) != 0)
                         <div class="card">
                             <div class="card-header bg-white" id="heading-menu7" style="padding: 0;">
@@ -418,6 +419,7 @@ use GuzzleHttp\Client;
                             </div>
                         </div>
                         @endif
+                        -->
                     </div>
                 </div>
                 <div class="col-md-10">

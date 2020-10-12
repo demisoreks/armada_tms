@@ -310,6 +310,9 @@ Route::bind('incidents', function($value, $route) {
     return App\AmdIncident::findBySlug($value)->first();
 });
 
+Route::match(['get', 'post'], 'patrols/{ers_location}/direction', [
+    'as' => 'patrols.direction', 'uses' => 'VisitsController@direction'
+])->middleware(['auth.user', 'auth.access:'.$link_id.',Commander']);
 Route::post('vists/{ers_location}/store', [
     'as' => 'visits.store', 'uses' => 'VisitsController@store'
 ])->middleware(['auth.user', 'auth.access:'.$link_id.',Commander']);
@@ -334,4 +337,10 @@ Route::match(['get', 'post'], 'reports/clients/{client}/responses', [
 ]);
 Route::match(['get', 'post'], 'reports/clients/{client}/patrols', [
     'as' => 'reports.clients.patrols', 'uses' => 'ClientReportsController@patrols'
+]);
+Route::match(['get', 'post'], 'reports/clients/{client}/responses/special', [
+    'as' => 'reports.clients.responses.special', 'uses' => 'ClientReportsController@responses_special'
+]);
+Route::match(['get', 'post'], 'reports/clients/{client}/patrols/special', [
+    'as' => 'reports.clients.patrols.special', 'uses' => 'ClientReportsController@patrols_special'
 ]);

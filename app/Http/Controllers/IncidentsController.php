@@ -36,8 +36,8 @@ class IncidentsController extends Controller
         $input['detailer_user_id'] = $user->id;
         $request->update($input);
 
-        $er_email = AmdConfig::find(1)->er_email;
-        if ($er_email) {
+        $er_emails = explode(",", AmdConfig::find(1)->er_email);
+        foreach ($er_emails as $er_email) {
             $incident_array = [];
             foreach (AmdIncident::where('request_id', $request->id)->get() as $incident) {
                 array_push($incident_array, $incident->incidentType->description);

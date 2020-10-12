@@ -12,6 +12,8 @@ use App\AmdErsVisit;
 use App\AmdErsVisitDetail;
 use App\AmdUser;
 use App\AmdErsChecklist;
+use App\AmdConfig;
+use GuzzleHttp\Client;
 
 class VisitsController extends Controller
 {
@@ -56,5 +58,36 @@ class VisitsController extends Controller
 
         return Redirect::route('visits.locations', $ers_location->client->slug())
                 ->with('success', '<span class="font-weight-bold">Done!</span><br />Patrol visit has been added.');
+    }
+
+    public function direction(AmdErsLocation $ers_location, Request $req) {
+        $input = $req->input();
+        $start_point = "";
+        $details = null;
+        if (isset($input['start_point'])) {
+            $start_point = $input['start_point'];
+
+            $client = new Client();
+            $response = $client->get('https://maps.googleapis.com/maps/api/directions/json', [
+                'query' => [
+                    'origin' => $start_point,
+                    'destination' => $ers_location->latitude.",".$ers_location->longitude,
+                    'key' => AmdConfig::find(1)->google_places_api_key
+                ]
+            ]);
+            $res = json_decode($response->getBody());
+            if (isset($res->routes)) {
+                $routes = $res->routes;
+                if (count($routes) > 0) {
+                    $route = $routes[0];
+                    $legs = $route->legs;
+                    $details = $legs[0];
+                }
+            }
+        } else {
+            $start_point = "";
+        }
+
+        return view('visits.direction', compact('ers_location', 'start_point', 'details'));
     }
 }

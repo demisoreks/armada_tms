@@ -23,10 +23,11 @@
                             <thead>
                                 <tr class="text-center">
                                     <th width="15%"><strong>LOCATION NAME</strong></th>
-                                    <th width="20%"><strong>CLIENT</strong></th>
+                                    <th width="15%"><strong>CLIENT</strong></th>
                                     <th><strong>ADDRESS</strong></th>
-                                    <th width="20%"><strong>COORDINATES</strong></th>
+                                    <th width="15%"><strong>COORDINATES</strong></th>
                                     <th width="20%" data-priority="1">&nbsp;</th>
+                                    <th width="10%" data-priority="1">&nbsp;</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -38,6 +39,9 @@
                                     <td>{{ $ers_location->latitude }},{{ $ers_location->longitude }}</td>
                                     <td class="text-center">
                                         <a class="btn btn-primary btn-block btn-sm" href="{{ route('visits.create', [$ers_location->slug()]) }}">Select This Location</a>
+                                    </td>
+                                    <td class="text-center">
+                                        <a class="btn btn-blue-grey btn-block btn-sm" href="{{ route('patrols.direction', $ers_location->slug()) }}" target="_blank">Direction</a>
                                     </td>
                                 </tr>
                                 @endforeach

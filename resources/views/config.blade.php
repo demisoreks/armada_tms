@@ -31,9 +31,10 @@
                 </div>
             </div>
             <div class="form-group row">
-                {!! Form::label('er_email', 'ER Email', ['class' => 'col-md-2 col-form-label']) !!}
+                {!! Form::label('er_email', 'ER Email(s)', ['class' => 'col-md-2 col-form-label']) !!}
                 <div class="col-md-4">
-                    {!! Form::email('er_email', $value = null, ['class' => 'form-control', 'placeholder' => 'ER Email', 'required' => true, 'maxlength' => 100]) !!}
+                    {!! Form::textarea('er_email', $value = null, ['class' => 'form-control', 'placeholder' => 'ER Email(s)', 'required' => true, 'maxlength' => 100]) !!}
+                    <small>Multiple emails should be separated by commas.</small>
                 </div>
             </div>
             <div class="form-group row">

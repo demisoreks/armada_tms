@@ -315,17 +315,33 @@ use GuzzleHttp\Client;
                             <strong>LIVE SITREP</strong>
                         </div>
                         <div class="card-body bg-white" style="height: 300px; overflow-y: scroll;">
-                            <marquee direction="up">
-                                @foreach (App\AmdSituationReport::orderBy('created_at', 'desc')->limit(20)->get() as $sitrep)
-                                <p class="text-center">
-                                    <span class="text-danger">{{ $sitrep->situation->description }}</span><br />
-                                    <strong>Location:</strong> {{ $sitrep->location }}<br />
-                                    <strong>Remarks:</strong> {{ $sitrep->remarks }}<br />
-                                    <span class="text-info">Submitted at {{ Carbon\Carbon::parse($sitrep->created_at)->format('h:ma M j, Y') }}<br />
-                                    by {{ $sitrep->user->name }}, {{ $sitrep->user->region->name }} Region</span><br />
-                                </p>
-                                @endforeach
-                            </marquee>
+                            <div id="incidents" class="carousel slide" data-ride="carousel">
+                                <div class="carousel-inner">
+                                    <?php
+                                    $active = true;
+                                    ?>
+                                    @foreach (App\AmdSituationReport::orderBy('created_at', 'desc')->limit(20)->get() as $sitrep)
+                                    <div class="carousel-item @if ($active) active @endif text-center">
+                                        <span class="text-danger">{{ $sitrep->situation->description }}</span><br />
+                                        <strong>Location:</strong> {{ $sitrep->location }}<br />
+                                        <strong>Remarks:</strong> {{ $sitrep->remarks }}<br />
+                                        <span class="text-info">Submitted at {{ Carbon\Carbon::parse($sitrep->created_at)->format('h:ma M j, Y') }}<br />
+                                        by {{ $sitrep->user->name }}, {{ $sitrep->user->region->name }} Region</span><br />
+                                    </div>
+                                    <?php
+                                    $active = false;
+                                    ?>
+                                    @endforeach
+                                    <a class="carousel-control-prev" href="#incidents" role="button" data-slide="prev" style="align-items: flex-start; font-weight: bold;">
+                                        <span class="carousel-control-prev-icon text-danger" aria-hidden="true">&lt;</span>
+                                        <span class="sr-only">Previous</span>
+                                    </a>
+                                    <a class="carousel-control-next" href="#incidents" role="button" data-slide="next" style="align-items: flex-start; font-weight: bold;">
+                                        <span class="carousel-control-next-icon text-danger" aria-hidden="true">&gt;</span>
+                                        <span class="sr-only">Next</span>
+                                    </a>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <!--

@@ -4,6 +4,7 @@
 <div class="row">
     <div class="col-12" style="margin-bottom: 20px;">
         <a class="btn btn-primary" href="{{ route('visits.clients') }}"><i class="fas fa-arrow-left"></i> Back to Clients</a>
+        <a class="btn btn-blue-grey" href="{{ route('patrols.direction', $ers_location->slug()) }}" target="_blank"><i class="fas fa-location-arrow"></i> Direction</a>
     </div>
 </div>
 <div class="row">
